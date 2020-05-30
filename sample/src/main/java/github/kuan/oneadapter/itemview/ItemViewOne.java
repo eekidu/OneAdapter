@@ -6,7 +6,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import github.kuan.oneadapter.BaseEventAgent;
-import github.kuan.oneadapter.IItemModel;
 import github.kuan.oneadapter.IItemView;
 import github.kuan.oneadapter.model.Model;
 
@@ -24,7 +23,7 @@ public class ItemViewOne extends LinearLayout implements IItemView {
     }
 
     @Override
-    public void bindData(IItemModel data, BaseEventAgent event, int position) {
+    public void bindData(Object data, BaseEventAgent event, int position) {
         if (data instanceof Model) {
             TextView textView = new TextView(getContext());
             textView.setText("I'm itemview one！");

@@ -18,13 +18,13 @@ import java.util.Map;
  * @author kuan
  */
 public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    protected List<IItemModel> mDatas;
+    protected List mDatas;
     protected E mBaseEventAgent;
     private List<Class<? extends View>> mViews;
 
     private Map<Class, IItemViewProvider> map = new HashMap<>();
 
-    public OneAdapter(List<IItemModel> datas, E baseEventAgent) {
+    public OneAdapter(List datas, E baseEventAgent) {
         mDatas = datas;
         mBaseEventAgent = baseEventAgent;
         mViews = new ArrayList<>();
@@ -54,7 +54,7 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder.itemView instanceof IItemView) {
-            IItemModel data = mDatas.get(position);
+            Object data = mDatas.get(position);
             IItemView itemView = (IItemView) holder.itemView;
             itemView.bindData(data, mBaseEventAgent, position);
         } else {
@@ -64,9 +64,9 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
 
     @Override
     public int getItemViewType(int position) {
-        IItemModel data = mDatas.get(position);
+        Object data = mDatas.get(position);
 
-        Class<? extends IItemModel> model = data.getClass();
+        Class<?> model = data.getClass();
         ViewProvider annotation = model.getAnnotation(ViewProvider.class);
         if (annotation != null) {
             Class<? extends IItemViewProvider> providerClass = annotation.value();
@@ -106,7 +106,7 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
 
 
     /*******************************/
-    public List<? extends IItemModel> getDatas() {
+    public List getDatas() {
         return mDatas;
     }
 
@@ -119,20 +119,20 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
     }
 
 
-    public void addItem(IItemModel baseBean) {
+    public void addItem(Object baseBean) {
         mDatas.add(baseBean);
 //        notifyItemInserted(datas.size() - 1);
     }
 
-    public void appendDatas(List<? extends IItemModel> datas) {
+    public void appendDatas(List datas) {
         int size = mDatas.size();
         mDatas.addAll(datas);
         notifyItemInserted(size);
     }
 
 
-    public void setmDatas(List<? extends IItemModel> datas) {
-        mDatas = (List<IItemModel>) datas;
+    public void setmDatas(List datas) {
+        mDatas = datas;
         notifyDataSetChanged();
     }
 }

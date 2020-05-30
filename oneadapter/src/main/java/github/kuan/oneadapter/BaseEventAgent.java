@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 作用：
  * <p>
@@ -24,8 +27,18 @@ public class BaseEventAgent {
 
     private Bundle mBundle;
     private int mLayoutManagerType;
-    private View.OnClickListener mOnClickListener;
+    private Map<Class, View.OnClickListener> mItemClickListener;
 
+    public void setOnItemClickListener(Class<? extends IItemView> clazz, View.OnClickListener itemClickListener) {
+        if (mItemClickListener == null) {
+            mItemClickListener = new HashMap<>();
+        }
+        mItemClickListener.put(clazz, itemClickListener);
+    }
+
+    public View.OnClickListener getItemClickListener(Class<? extends IItemView> clazz) {
+        return mItemClickListener != null ? mItemClickListener.get(clazz) : null;
+    }
 
     public int getLayoutManagerType() {
         return mLayoutManagerType;

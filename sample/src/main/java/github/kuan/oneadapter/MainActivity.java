@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(rv);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
-        List<IItemModel> dataList = mockData();
+        List dataList = mockData();
 
         BaseEventAgent baseEventAgent = new BaseEventAgent();
         OneAdapter<BaseEventAgent> adapter = new OneAdapter<>(dataList, baseEventAgent);
@@ -29,8 +29,8 @@ public class MainActivity extends AppCompatActivity {
         rv.setAdapter(adapter);
     }
 
-    private List<IItemModel> mockData() {
-        List<IItemModel> list = new ArrayList<>();
+    private List mockData() {
+        List list = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             list.add(new Model());
         }

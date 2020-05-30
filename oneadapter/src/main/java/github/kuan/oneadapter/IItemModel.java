@@ -5,6 +5,7 @@ package github.kuan.oneadapter;
  *
  * @author kuan
  */
+@Deprecated
 public interface IItemModel {
 
 }
