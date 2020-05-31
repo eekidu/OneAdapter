@@ -24,6 +24,9 @@ import java.util.Map;
  * @date 2020-05-30
  */
 public class BaseEventAgent {
+    public static final int LAYOUT_TYPE_LINEAR = 1;
+    public static final int LAYOUT_TYPE_GRID = 2;
+    public static final int LAYOUT_TYPE_STAGGERED = 3;
 
     private Bundle mBundle;
     private int mLayoutManagerType;
@@ -46,11 +49,11 @@ public class BaseEventAgent {
 
     public void setLayoutManagerType(RecyclerView.LayoutManager layoutManager) {
         if (layoutManager instanceof StaggeredGridLayoutManager) {
-            mLayoutManagerType = 3;
+            mLayoutManagerType = LAYOUT_TYPE_STAGGERED;
         } else if (layoutManager instanceof GridLayoutManager) {
-            mLayoutManagerType = 2;
+            mLayoutManagerType = LAYOUT_TYPE_GRID;
         } else if (layoutManager instanceof LinearLayoutManager) {
-            mLayoutManagerType = 1;
+            mLayoutManagerType = LAYOUT_TYPE_LINEAR;
         }
     }
 
@@ -60,5 +63,4 @@ public class BaseEventAgent {
         }
         return mBundle;
     }
-
 }

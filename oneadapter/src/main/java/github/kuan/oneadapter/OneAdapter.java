@@ -67,7 +67,19 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
         Object data = mDatas.get(position);
 
         Class<?> model = data.getClass();
-        ViewProvider annotation = model.getAnnotation(ViewProvider.class);
+        MapToView mapToView = model.getAnnotation(MapToView.class);
+        if (mapToView != null) {
+            Class<? extends View> value = mapToView.value();
+            int i = mViews.indexOf(value);
+            if (i > -1) {
+                return i;
+            } else {
+                mViews.add(value);
+                return mViews.size() - 1;
+            }
+        }
+
+        MapToViewProvider annotation = model.getAnnotation(MapToViewProvider.class);
         if (annotation != null) {
             Class<? extends IItemViewProvider> providerClass = annotation.value();
             IItemViewProvider iItemViewProvider = map.get(providerClass);
@@ -94,7 +106,7 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
                 throw new RuntimeException(providerClass.getSimpleName() + "  newInstance() fail! Constructors cannot be private！");
             }
         } else {
-            throw new RuntimeException(model.getSimpleName() + "  need ViewProvider!");
+            throw new RuntimeException(model.getSimpleName() + "  need MapToViewProvider!");
         }
     }
 

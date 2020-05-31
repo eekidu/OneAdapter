@@ -1,20 +1,19 @@
 package github.kuan.oneadapter;
 
-import android.view.View;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 声明在model上，标记该model应用的ItemViewProvider
+ * 声明在model上，多对多关系，通过ItemViewProvider，使得model映射到某一ItemView。
  *
  * @author kuan
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ViewProvider {
+public @interface MapToViewProvider {
 
     Class<? extends IItemViewProvider> value();
+
 }
