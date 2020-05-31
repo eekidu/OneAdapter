@@ -132,19 +132,32 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
 
 
     public void addItem(Object baseBean) {
+        if (baseBean == null) {
+            return;
+        }
+        if (mDatas == null) {
+            mDatas = new ArrayList();
+        }
         mDatas.add(baseBean);
-//        notifyItemInserted(datas.size() - 1);
+        notifyItemInserted(mDatas.size() - 1);
     }
 
     public void appendDatas(List datas) {
+        if (datas == null) {
+            return;
+        }
+        if (mDatas == null) {
+            mDatas = new ArrayList();
+        }
         int size = mDatas.size();
         mDatas.addAll(datas);
         notifyItemInserted(size);
     }
 
-
     public void setmDatas(List datas) {
-        mDatas = datas;
-        notifyDataSetChanged();
+        if (datas != null) {
+            mDatas = datas;
+            notifyDataSetChanged();
+        }
     }
 }
