@@ -56,7 +56,11 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
         if (holder.itemView instanceof IItemView) {
             Object data = mDatas.get(position);
             IItemView itemView = (IItemView) holder.itemView;
-            itemView.bindData(data, mBaseEventAgent, position);
+            try {
+                itemView.bindData(data, mBaseEventAgent, position);
+            } catch (Exception ex) {
+                throw new RuntimeException(itemView.getClass().getSimpleName() + " need data type is not " + data.getClass().getSimpleName() + "!! Check!");
+            }
         } else {
             throw new RuntimeException(holder.itemView.getClass().getSimpleName() + " must implement IItemView");
         }
