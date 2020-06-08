@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,11 +17,13 @@ import java.util.Map;
  * @author kuan
  */
 public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    public static boolean isDebug = true;
+
     protected List mDatas;
     protected E mBaseEventAgent;
     private List<Class<? extends View>> mViews;
 
-    private Map<Class, IItemViewProvider> map = new HashMap<>();
+    private Map<Class, IItemViewProvider> mapViewProviderCache = new HashMap<>();
 
     public OneAdapter(List datas, E baseEventAgent) {
         mDatas = datas;
@@ -33,85 +34,104 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Class<? extends View> aClass = mViews.get(viewType);
+        View itemView = null;
         try {
+            Class<? extends View> aClass = mViews.get(viewType);
             Constructor<? extends View> constructor = aClass.getConstructor(Context.class);
-            View view = constructor.newInstance(parent.getContext());
-            return new RecyclerView.ViewHolder(view) {
-            };
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            itemView = constructor.newInstance(parent.getContext());
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            itemView = new ItemViewWhenError(parent.getContext());
         }
-        return null;
+        return new RecyclerView.ViewHolder(itemView) {
+        };
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (holder.itemView instanceof IItemView) {
-            Object data = mDatas.get(position);
-            IItemView itemView = (IItemView) holder.itemView;
+        View holderItemView = holder.itemView;
+        if (holderItemView instanceof IItemView) {
+            Object model = mDatas.get(position);
+            IItemView itemView = (IItemView) holderItemView;
             try {
-                itemView.bindData(data, mBaseEventAgent, position);
+                itemView.bindData(model, mBaseEventAgent, position);
             } catch (Exception ex) {
-                throw new RuntimeException(itemView.getClass().getSimpleName() + " need data type is not " + data.getClass().getSimpleName() + "!! Check!");
+                if (isDebug) {
+                    if (ex instanceof ClassCastException) {
+                        StackTraceElement[] stackTrace = ex.getStackTrace();
+                        if (stackTrace != null && stackTrace.length > 0) {
+                            StackTraceElement stackTraceElement = stackTrace[0];
+                            String localInfo = stackTraceElement.getFileName() + ":" + stackTraceElement.getLineNumber();
+                            String errMsg = String.format("(%s) Generic Type error! %s", localInfo, ex.getMessage());
+                            throw new ClassCastException(errMsg);
+                        }
+                    }
+                    throw ex;
+                }
             }
         } else {
-            throw new RuntimeException(holder.itemView.getClass().getSimpleName() + " must implement IItemView");
+            if (isDebug) {
+                String errMsg = String.format("(%s.java:1) must implement IItemView interface!", holderItemView.getClass().getSimpleName());
+                throw new ClassCastException(errMsg);
+            }
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        Object data = mDatas.get(position);
+        Object model = mDatas.get(position);
+        Class<?> modelClazz = model.getClass();
 
-        Class<?> model = data.getClass();
-        MapToView mapToView = model.getAnnotation(MapToView.class);
-        if (mapToView != null) {
-            Class<? extends View> value = mapToView.value();
-            int i = mViews.indexOf(value);
-            if (i > -1) {
-                return i;
+        MapToView mapToViewAnnotation = modelClazz.getAnnotation(MapToView.class);
+        MapToViewProvider providerAnnotation = null;
+        Class<? extends View> itemViewClazz = null;
+        if (mapToViewAnnotation != null) {
+            itemViewClazz = mapToViewAnnotation.value();
+        }
+
+        if (itemViewClazz == null) {
+            providerAnnotation = modelClazz.getAnnotation(MapToViewProvider.class);
+            if (providerAnnotation != null) {
+                Class<? extends IItemViewProvider> providerClass = providerAnnotation.value();
+                IItemViewProvider viewProvider = mapViewProviderCache.get(providerClass);
+                if (viewProvider == null) {
+                    try {
+                        viewProvider = providerClass.newInstance();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InstantiationException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                if (viewProvider != null) {
+                    mapViewProviderCache.put(providerClass, viewProvider);
+                    itemViewClazz = viewProvider.getItemView(model, mBaseEventAgent, position);
+                } else {
+                    if (isDebug) {
+                        String errInfo = String.format("(%s.java:1) must has empty construction method!", viewProvider.getClass().getSimpleName());
+                        throw new RuntimeException(errInfo);
+                    }
+                }
+            }
+        }
+        if (mapToViewAnnotation == null && providerAnnotation == null) {
+            if (isDebug) {
+                String errInfo = String.format("(%s.java:0) need annotation: %s!", modelClazz.getSimpleName(), "@" + MapToView.class.getSimpleName() + " or @" + MapToViewProvider.class.getSimpleName());
+                throw new RuntimeException(errInfo);
+            }
+        }
+        if (itemViewClazz != null) {
+            int index = mViews.indexOf(itemViewClazz);
+            if (index > -1) {
+                return index;
             } else {
-                mViews.add(value);
+                mViews.add(itemViewClazz);
                 return mViews.size() - 1;
             }
         }
-
-        MapToViewProvider annotation = model.getAnnotation(MapToViewProvider.class);
-        if (annotation != null) {
-            Class<? extends IItemViewProvider> providerClass = annotation.value();
-            IItemViewProvider iItemViewProvider = map.get(providerClass);
-            if (iItemViewProvider == null) {
-                try {
-                    iItemViewProvider = providerClass.newInstance();
-                    map.put(providerClass, iItemViewProvider);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (iItemViewProvider != null) {
-                Class<? extends View> itemView = iItemViewProvider.getItemView(data, mBaseEventAgent, position);
-                int i = mViews.indexOf(itemView);
-                if (i > -1) {
-                    return i;
-                } else {
-                    mViews.add(itemView);
-                    return mViews.size() - 1;
-                }
-            } else {
-                throw new RuntimeException(providerClass.getSimpleName() + "  newInstance() fail! Constructors cannot be private！");
-            }
-        } else {
-            throw new RuntimeException(model.getSimpleName() + "  need MapToViewProvider!");
-        }
+        return -1;
     }
 
 
