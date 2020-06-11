@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 声明在model上，一对一关系，model直接映射到view
+ * 标记在model类上，一对一关系，model直接映射到view
  *
  * @author kee
  */

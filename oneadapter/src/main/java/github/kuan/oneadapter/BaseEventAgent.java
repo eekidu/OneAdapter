@@ -68,12 +68,6 @@ public class BaseEventAgent {
         return mItemClickListeners != null ? mItemClickListeners.get(clazz) : null;
     }
 
-
-    public <T> void registerCustomListener(T customListener) {
-        //TODO
-        registerCustomListener(null, customListener);
-    }
-
     public <T> void registerCustomListener(Class<T> clazz, T customListener) {
         if (clazz == null) {
             throw new IllegalArgumentException("clazz can't be null, is used for Key!");

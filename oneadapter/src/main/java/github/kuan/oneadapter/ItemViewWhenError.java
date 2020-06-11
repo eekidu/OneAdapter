@@ -3,11 +3,11 @@ package github.kuan.oneadapter;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
 
-public class ItemViewWhenError extends TextView implements IItemView {
+public class ItemViewWhenError extends AppCompatTextView implements IItemView {
     public ItemViewWhenError(Context context) {
         this(context, null);
     }

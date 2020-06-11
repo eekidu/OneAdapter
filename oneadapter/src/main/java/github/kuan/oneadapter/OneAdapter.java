@@ -1,6 +1,7 @@
 package github.kuan.oneadapter;
 
 import android.content.Context;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -21,14 +22,22 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
 
     protected List mDatas;
     protected E mBaseEventAgent;
-    private List<Class<? extends View>> mViews;
+    private SparseArray<Class<? extends View>> mTypeViews;
 
     private Map<Class, IItemViewProvider> mapViewProviderCache = new HashMap<>();
 
-    public OneAdapter(List datas, E baseEventAgent) {
-        mDatas = datas;
+    public OneAdapter() {
+        mTypeViews = new SparseArray<>();
+    }
+
+    public OneAdapter(E baseEventAgent) {
+        this();
         mBaseEventAgent = baseEventAgent;
-        mViews = new ArrayList<>();
+    }
+
+    public OneAdapter(List datas, E baseEventAgent) {
+        this(baseEventAgent);
+        mDatas = datas;
     }
 
     @NonNull
@@ -36,7 +45,7 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = null;
         try {
-            Class<? extends View> aClass = mViews.get(viewType);
+            Class<? extends View> aClass = mTypeViews.get(viewType);
             Constructor<? extends View> constructor = aClass.getConstructor(Context.class);
             itemView = constructor.newInstance(parent.getContext());
 
@@ -123,12 +132,12 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
             }
         }
         if (itemViewClazz != null) {
-            int index = mViews.indexOf(itemViewClazz);
+            int index = mTypeViews.indexOfValue(itemViewClazz);
             if (index > -1) {
                 return index;
             } else {
-                mViews.add(itemViewClazz);
-                return mViews.size() - 1;
+                mTypeViews.put(mTypeViews.size(), itemViewClazz);
+                return mTypeViews.size() - 1;
             }
         }
         return -1;

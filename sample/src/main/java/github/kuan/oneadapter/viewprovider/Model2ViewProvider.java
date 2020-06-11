@@ -6,7 +6,7 @@ import github.kuan.oneadapter.BaseEventAgent;
 import github.kuan.oneadapter.IItemViewProvider;
 import github.kuan.oneadapter.itemview.ItemViewOne;
 
-public class ModelOneViewProvider implements IItemViewProvider {
+public class Model2ViewProvider implements IItemViewProvider {
     @Override
     public Class<? extends View> getItemView(Object model, BaseEventAgent event, int position) {
         return ItemViewOne.class;

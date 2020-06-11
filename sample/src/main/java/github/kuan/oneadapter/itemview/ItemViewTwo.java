@@ -10,30 +10,32 @@ import androidx.annotation.Nullable;
 
 import github.kuan.oneadapter.BaseEventAgent;
 import github.kuan.oneadapter.IItemView;
-import github.kuan.oneadapter.model.Model;
+import github.kuan.oneadapter.model.Model2;
 
-public class ItemViewOne extends LinearLayout implements IItemView {
+public class ItemViewTwo extends LinearLayout implements IItemView<Model2> {
+
     private TextView mTextView;
 
-    public ItemViewOne(Context context) {
-        this(context,null);
+    public ItemViewTwo(Context context) {
+        this(context, null);
     }
 
-    public ItemViewOne(Context context, @Nullable AttributeSet attrs) {
-       this(context, attrs,-1);
+    public ItemViewTwo(Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, -1);
     }
 
-    public ItemViewOne(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ItemViewTwo(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mTextView = new TextView(context);
         addView(mTextView);
         setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 300));
     }
 
+
     @Override
-    public void bindData(Object data, BaseEventAgent event, int position) {
-        if (data instanceof Model) {
-            mTextView.setText(data.hashCode()+"");
-        }
+    public void bindData(Model2 data, BaseEventAgent event, int position) {
+        mTextView.setText(data.hashCode()+"");
     }
+
+
 }

@@ -1,10 +1,9 @@
 package github.kuan.oneadapter.model;
 
-import android.widget.TextView;
+import github.kuan.oneadapter.MapToView;
+import github.kuan.oneadapter.itemview.ItemViewOne;
 
-import github.kuan.oneadapter.MapToViewProvider;
-import github.kuan.oneadapter.viewprovider.ModelOneViewProvider;
-
-@MapToViewProvider(value = ModelOneViewProvider.class, targetView = TextView.class)
+@MapToView(value = ItemViewOne.class)
 public class Model {
+    String text;
 }
