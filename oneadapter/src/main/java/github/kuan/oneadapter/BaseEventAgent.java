@@ -23,6 +23,9 @@ import java.util.Map;
  * @date 2020-05-30
  */
 public class BaseEventAgent {
+    /**
+     * 布局类型：线性、网格、瀑布流
+     */
     public static final int LAYOUT_TYPE_LINEAR = 1;
     public static final int LAYOUT_TYPE_GRID = 2;
     public static final int LAYOUT_TYPE_STAGGERED = 3;
