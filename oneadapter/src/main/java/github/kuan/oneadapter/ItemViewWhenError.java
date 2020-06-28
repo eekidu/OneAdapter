@@ -22,7 +22,7 @@ public class ItemViewWhenError extends AppCompatTextView implements IItemView {
 
     @Override
     public void bindData(Object data, BaseEventAgent event, int position) {
-        setText(data.toString());
+        setText(data.toString() +"  "+position);
         if (!OneAdapter.isDebug) {
             setLayoutParams(new ViewGroup.LayoutParams(0, 0));
         }

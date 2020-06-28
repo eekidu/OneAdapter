@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
         textView.setText("我是头部布局");
         adapter.addHeaderView(textView);
 
+        RecyclerView.ViewHolder viewHolderForAdapterPosition = rv.findViewHolderForAdapterPosition(1);
+
 
     }
 

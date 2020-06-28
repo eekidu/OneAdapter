@@ -16,4 +16,5 @@ public interface IItemViewProvider {
      * @return
      */
     Class<? extends View> getItemView(Object model, BaseEventAgent event, int position);
+
 }

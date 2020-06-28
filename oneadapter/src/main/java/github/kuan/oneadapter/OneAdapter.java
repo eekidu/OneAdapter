@@ -1,11 +1,14 @@
 package github.kuan.oneadapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.lang.reflect.Constructor;
@@ -22,12 +25,13 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
 
     protected List mDatas;
     protected E mBaseEventAgent;
-    private SparseArray<Class<? extends View>> mTypeViews;
 
     private Map<Class, IItemViewProvider> mapViewProviderCache = new HashMap<>();
 
+    private List<TempHolder> mTempHolderSparseArray;
+
     public OneAdapter() {
-        mTypeViews = new SparseArray<>();
+        mTempHolderSparseArray = new ArrayList<>();
     }
 
     public OneAdapter(E baseEventAgent) {
@@ -43,104 +47,111 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = null;
-        try {
-            Class<? extends View> aClass = mTypeViews.get(viewType);
-            Constructor<? extends View> constructor = aClass.getConstructor(Context.class);
-            itemView = constructor.newInstance(parent.getContext());
+        //报错1
+        TextView textView = new TextView(parent.getContext());
+        textView.setText("viewType  " + viewType);
+        return new ViewHolder(textView);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            itemView = new ItemViewWhenError(parent.getContext());
-        }
-        return new RecyclerView.ViewHolder(itemView) {
-        };
+
+
+//        try {
+//            TempHolder holder = mTempHolderSparseArray.get(viewType);
+//            if (holder.viewClazz != null) {
+//                return IItemViewViewHolder.createViewHolder(parent.getContext(), holder.viewClazz);
+//            } else {
+//                return holder.mViewHolder;
+//            }
+//        } catch (RuntimeException e) {
+//            e.printStackTrace();
+//
+//            TextView textView = new TextView(parent.getContext());
+//            ViewHolder viewHolder = new ViewHolder(textView);
+////            return new IItemViewViewHolder(new ItemViewWhenError(parent.getContext()));
+//            return viewHolder;
+//        }
+
+//        View itemView = null;
+//        try {
+//            Class<? extends View> aClass = mTypeViews.get(viewType);
+//            Constructor<? extends View> constructor = aClass.getConstructor(Context.class);
+//            itemView = constructor.newInstance(parent.getContext());
+//
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            itemView = new ItemViewWhenError(parent.getContext());
+//        }
+//        return new RecyclerView.ViewHolder(itemView) {
+//        };
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        View holderItemView = holder.itemView;
-        if (holderItemView instanceof IItemView) {
-            Object model = mDatas.get(position);
-            IItemView itemView = (IItemView) holderItemView;
-            try {
-                itemView.bindData(model, mBaseEventAgent, position);
-            } catch (Exception ex) {
-                if (isDebug) {
-                    if (ex instanceof ClassCastException) {
-                        StackTraceElement[] stackTrace = ex.getStackTrace();
-                        if (stackTrace != null && stackTrace.length > 0) {
-                            StackTraceElement stackTraceElement = stackTrace[0];
-                            String localInfo = stackTraceElement.getFileName() + ":" + stackTraceElement.getLineNumber();
-                            String errMsg = String.format("(%s) Generic Type error! %s", localInfo, ex.getMessage());
-                            throw new ClassCastException(errMsg);
-                        }
-                    }
-                    throw ex;
-                }
-            }
-        } else {
-            if (isDebug) {
-                String errMsg = String.format("(%s.java:1) must implement IItemView interface!", holderItemView.getClass().getSimpleName());
-                throw new ClassCastException(errMsg);
-            }
-        }
+        Object model = mDatas.get(position);
+        holder.itemView.setBackgroundColor(Color.BLUE);
+//        holder.bindData(model, mBaseEventAgent, position);
     }
+
 
     @Override
     public int getItemViewType(int position) {
-        Object model = mDatas.get(position);
-        Class<?> modelClazz = model.getClass();
-
-        MapToView mapToViewAnnotation = modelClazz.getAnnotation(MapToView.class);
-        MapToViewProvider providerAnnotation = null;
-        Class<? extends View> itemViewClazz = null;
-        if (mapToViewAnnotation != null) {
-            itemViewClazz = mapToViewAnnotation.value();
-        }
-
-        if (itemViewClazz == null) {
-            providerAnnotation = modelClazz.getAnnotation(MapToViewProvider.class);
-            if (providerAnnotation != null) {
-                Class<? extends IItemViewProvider> providerClass = providerAnnotation.value();
-                IItemViewProvider viewProvider = mapViewProviderCache.get(providerClass);
-                if (viewProvider == null) {
-                    try {
-                        viewProvider = providerClass.newInstance();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (InstantiationException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-                if (viewProvider != null) {
-                    mapViewProviderCache.put(providerClass, viewProvider);
-                    itemViewClazz = viewProvider.getItemView(model, mBaseEventAgent, position);
-                } else {
-                    if (isDebug) {
-                        String errInfo = String.format("(%s.java:1) must has empty construction method!", viewProvider.getClass().getSimpleName());
-                        throw new RuntimeException(errInfo);
-                    }
-                }
-            }
-        }
-        if (mapToViewAnnotation == null && providerAnnotation == null) {
-            if (isDebug) {
-                String errInfo = String.format("(%s.java:0) need annotation: %s!", modelClazz.getSimpleName(), "@" + MapToView.class.getSimpleName() + " or @" + MapToViewProvider.class.getSimpleName());
-                throw new RuntimeException(errInfo);
-            }
-        }
-        if (itemViewClazz != null) {
-            int index = mTypeViews.indexOfValue(itemViewClazz);
-            if (index > -1) {
-                return index;
-            } else {
-                mTypeViews.put(mTypeViews.size(), itemViewClazz);
-                return mTypeViews.size() - 1;
-            }
-        }
-        return -1;
+        return 1;
+//        Object model = mDatas.get(position);
+//        Class<?> modelClazz = model.getClass();
+//
+//        MapToView mapToViewAnnotation = modelClazz.getAnnotation(MapToView.class);
+//        MapToViewProvider providerAnnotation = null;
+//        Class<? extends View> itemViewClazz = null;
+//        if (mapToViewAnnotation != null) {
+//            itemViewClazz = mapToViewAnnotation.value();
+//        }
+//
+//        if (itemViewClazz == null) {
+//            providerAnnotation = modelClazz.getAnnotation(MapToViewProvider.class);
+//            if (providerAnnotation != null) {
+//                Class<? extends IItemViewProvider> providerClass = providerAnnotation.value();
+//                IItemViewProvider viewProvider = mapViewProviderCache.get(providerClass);
+//                if (viewProvider == null) {
+//                    try {
+//                        viewProvider = providerClass.newInstance();
+//                    } catch (IllegalAccessException e) {
+//                        e.printStackTrace();
+//                    } catch (InstantiationException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                }
+//                if (viewProvider != null) {
+//                    mapViewProviderCache.put(providerClass, viewProvider);
+//                    itemViewClazz = viewProvider.getItemView(model, mBaseEventAgent, position);
+//                } else {
+//                    if (isDebug) {
+//                        String errInfo = String.format("(%s.java:1) must has empty construction method!", viewProvider.getClass().getSimpleName());
+//                        throw new RuntimeException(errInfo);
+//                    }
+//                }
+//            }
+//        }
+//        if (mapToViewAnnotation == null && providerAnnotation == null) {
+//            if (isDebug) {
+//                String errInfo = String.format("(%s.java:0) need annotation: %s!", modelClazz.getSimpleName(), "@" + MapToView.class.getSimpleName() + " or @" + MapToViewProvider.class.getSimpleName());
+//                throw new RuntimeException(errInfo);
+//            }
+//        }
+//        if (itemViewClazz != null) {
+//
+//            TempHolder tempHolder = new TempHolder();
+//            tempHolder.viewClazz = itemViewClazz;
+//
+//
+//            int index = mTempHolderSparseArray.indexOf(tempHolder);
+//            if (index > -1) {
+//                return index;
+//            } else {
+//                mTempHolderSparseArray.add(tempHolder);
+//                return mTempHolderSparseArray.size() - 1;
+//            }
+//        }
+//        return -1;
     }
 
 
@@ -149,6 +160,39 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
         return mDatas == null ? 0 : mDatas.size();
     }
 
+
+    /********************************/
+    public class TempHolder {
+        public Class<? extends View> viewClazz;
+        public ViewHolder mViewHolder;
+
+        @Override
+        public int hashCode() {
+            if (viewClazz != null) {
+                return viewClazz.hashCode();
+            } else if (mViewHolder != null) {
+                return mViewHolder.getLayoutId();
+            }
+            return super.hashCode();
+        }
+
+        public Class<? extends View> getViewClazz() {
+            return viewClazz;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            TempHolder that = (TempHolder) obj;
+            if (viewClazz != null && viewClazz.equals(that.viewClazz)) {
+                return true;
+            }
+
+            if (mViewHolder != null && mViewHolder.equals(that.mViewHolder)) {
+                return true;
+            }
+            return super.equals(obj);
+        }
+    }
 
     /*******************************/
     public List getDatas() {
