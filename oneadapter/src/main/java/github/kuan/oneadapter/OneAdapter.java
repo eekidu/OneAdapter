@@ -17,26 +17,33 @@ import java.util.Map;
 /**
  * @author kuan
  */
-public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static boolean isDebug = true;
 
     protected List mDatas;
-    protected E mBaseEventAgent;
-    private SparseArray<Class<? extends View>> mTypeViews;
+    protected E mBaseEventHandlerAgent;
+    /**
+     * Type到ViewClass的映射
+     */
+    private SparseArray<Class<? extends View>> mTypeToViewMap;
 
-    private Map<Class, IItemViewProvider> mapViewProviderCache = new HashMap<>();
+    /**
+     * Mode到ViewProvider的映射
+     * Model->ViewProvider->ViewClass
+     */
+    private Map<Class, IItemViewProvider> mModelToViewProviderMap = new HashMap<>();
 
     public OneAdapter() {
-        mTypeViews = new SparseArray<>();
+        mTypeToViewMap = new SparseArray<>();
     }
 
-    public OneAdapter(E baseEventAgent) {
+    public OneAdapter(E eventHandlerAgent) {
         this();
-        mBaseEventAgent = baseEventAgent;
+        this.mBaseEventHandlerAgent = eventHandlerAgent;
     }
 
-    public OneAdapter(List datas, E baseEventAgent) {
-        this(baseEventAgent);
+    public OneAdapter(List datas, E baseEventHandlerAgent) {
+        this(baseEventHandlerAgent);
         mDatas = datas;
     }
 
@@ -45,7 +52,7 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = null;
         try {
-            Class<? extends View> aClass = mTypeViews.get(viewType);
+            Class<? extends View> aClass = mTypeToViewMap.get(viewType);
             Constructor<? extends View> constructor = aClass.getConstructor(Context.class);
             itemView = constructor.newInstance(parent.getContext());
 
@@ -64,7 +71,7 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
             Object model = mDatas.get(position);
             IItemView itemView = (IItemView) holderItemView;
             try {
-                itemView.bindData(model, mBaseEventAgent, position);
+                itemView.bindData(model, mBaseEventHandlerAgent, position);
             } catch (Exception ex) {
                 if (isDebug) {
                     if (ex instanceof ClassCastException) {
@@ -103,7 +110,7 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
             providerAnnotation = modelClazz.getAnnotation(MapToViewProvider.class);
             if (providerAnnotation != null) {
                 Class<? extends IItemViewProvider> providerClass = providerAnnotation.value();
-                IItemViewProvider viewProvider = mapViewProviderCache.get(providerClass);
+                IItemViewProvider viewProvider = mModelToViewProviderMap.get(providerClass);
                 if (viewProvider == null) {
                     try {
                         viewProvider = providerClass.newInstance();
@@ -115,8 +122,8 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
 
                 }
                 if (viewProvider != null) {
-                    mapViewProviderCache.put(providerClass, viewProvider);
-                    itemViewClazz = viewProvider.getItemView(model, mBaseEventAgent, position);
+                    mModelToViewProviderMap.put(providerClass, viewProvider);
+                    itemViewClazz = viewProvider.getItemView(model, mBaseEventHandlerAgent, position);
                 } else {
                     if (isDebug) {
                         String errInfo = String.format("(%s.java:1) must has empty construction method!", viewProvider.getClass().getSimpleName());
@@ -132,12 +139,12 @@ public class OneAdapter<E extends BaseEventAgent> extends RecyclerView.Adapter<R
             }
         }
         if (itemViewClazz != null) {
-            int index = mTypeViews.indexOfValue(itemViewClazz);
+            int index = mTypeToViewMap.indexOfValue(itemViewClazz);
             if (index > -1) {
                 return index;
             } else {
-                mTypeViews.put(mTypeViews.size(), itemViewClazz);
-                return mTypeViews.size() - 1;
+                mTypeToViewMap.put(mTypeToViewMap.size(), itemViewClazz);
+                return mTypeToViewMap.size() - 1;
             }
         }
         return -1;

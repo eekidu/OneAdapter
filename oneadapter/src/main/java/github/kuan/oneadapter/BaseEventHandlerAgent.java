@@ -22,7 +22,7 @@ import java.util.Map;
  * @author kuan
  * @date 2020-05-30
  */
-public class BaseEventAgent {
+public class BaseEventHandlerAgent {
     public static final int LAYOUT_TYPE_LINEAR = 1;
     public static final int LAYOUT_TYPE_GRID = 2;
     public static final int LAYOUT_TYPE_STAGGERED = 3;
