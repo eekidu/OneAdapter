@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "github.kuan.oneadapter"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -21,6 +21,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 }
 
 dependencies {
@@ -32,5 +36,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     api 'androidx.recyclerview:recyclerview:1.1.0'
     api project(":oneadapter")
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
+
+//    api "github.kuan:commdp:1.1.0-202008101835-SNAPSHOT"
+//    api "github.kuan:base:1.1.1-202007252240-SNAPSHOT"
 
 }

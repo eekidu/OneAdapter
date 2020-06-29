@@ -1,12 +1,16 @@
 apply plugin: 'com.android.library'
 
+project.group = "github.kuan"
+project.version = "1.1.0"
+
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.1"
 
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -21,6 +25,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 
 }
 
@@ -32,4 +40,5 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     compileOnly 'androidx.recyclerview:recyclerview:1.1.0'
+
 }

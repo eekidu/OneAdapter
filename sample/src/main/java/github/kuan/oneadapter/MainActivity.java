@@ -1,51 +1,100 @@
 package github.kuan.oneadapter;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import github.kuan.oneadapter.ext.HeaderOneAdapter;
-import github.kuan.oneadapter.model.Model;
+import github.kuan.oneadapter.demo.DemoEventMessenger;
+import github.kuan.oneadapter.demo.model.AModel;
+import github.kuan.oneadapter.demo.model.BModel;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static RecyclerView.RecycledViewPool sPool;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        RecyclerView rv = new RecyclerView(this);
-        setContentView(rv);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        RecyclerView recyclerView = new RecyclerView(this);
+        setContentView(recyclerView);
 
-        List dataList = mockData();
+        OneAdapter.setDebug(true, true);
 
-        BaseEventAgent baseEventAgent = new BaseEventAgent();
-        HeaderOneAdapter<BaseEventAgent> adapter = new HeaderOneAdapter<>(baseEventAgent);
-        baseEventAgent.setLayoutManagerType(layoutManager);
-        rv.setLayoutManager(layoutManager);
-        rv.setAdapter(adapter);
+        demo1(recyclerView);
+    }
 
-        adapter.setmDatas(dataList);
+    private void demo1(RecyclerView recycler) {
+        List<Object> objects = new ArrayList<>();
 
-        TextView textView = new TextView(this);
-        textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 200));
-        textView.setText("我是头部布局");
-        adapter.addHeaderView(textView);
+        objects.add(new AModel());
+        objects.add(new BModel(1));
+        objects.add(new BModel(2));
+        objects.add(new BModel(2));
+        objects.add(new BModel(2));
+        objects.add(new BModel(3));
+        objects.add(new BModel(1));
+        objects.add(new BModel(1));
+        objects.add(new BModel(4));
+        objects.add(new BModel(1));
+        objects.add(new BModel(1));
+        objects.add(new AModel());
 
+        OneAdapter oneAdapter = new OneAdapter();
+        oneAdapter.setDataList(objects);
+
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        recycler.addItemDecoration(dividerItemDecoration);
+        recycler.setAdapter(oneAdapter);
+
+        addHeaderFooter(oneAdapter);
+        addClickListener(recycler, oneAdapter);
 
     }
 
-    private List mockData() {
-        List list = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            list.add(new Model());
+    private void addClickListener(RecyclerView recycler, OneAdapter oneAdapter) {
+        BaseEventMessenger demoEventMessage = new DemoEventMessenger(MainActivity.this);
+        oneAdapter.setEventMessenger(demoEventMessage);
+    }
+
+    private void addHeaderFooter(OneAdapter oneAdapter) {
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 300);
+        for (int i = 0; i < 4; i++) {
+            TextView textView = new TextView(this);
+            textView.setGravity(Gravity.CENTER);
+            textView.setLayoutParams(layoutParams);
+            if (i < 2) {
+                textView.setText("我是头布局" + i);
+                oneAdapter.addHeaderView(textView);
+            } else {
+                textView.setText("我是尾布局" + i);
+                oneAdapter.addFooterView(textView);
+            }
+
         }
-        return list;
     }
+
+    public static int[] getItemColor() {
+        int[] colors = new int[]{Color.parseColor("#336699"),
+                Color.parseColor("#99CC33"),
+                Color.parseColor("#99CCCC"),
+        };
+        return colors;
+    }
+
+    public static int getItemColor(int position) {
+        int[] itemColor = getItemColor();
+        return itemColor[position % itemColor.length];
+    }
+
 }
