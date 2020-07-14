@@ -100,46 +100,40 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
     public int getItemViewType(int position) {
         Object model = mDatas.get(position);
         Class<?> modelClazz = model.getClass();
-
-        MapToView mapToViewAnnotation = modelClazz.getAnnotation(MapToView.class);
-        MapToViewProvider providerAnnotation = null;
         Class<? extends View> itemViewClazz = null;
-        if (mapToViewAnnotation != null) {
-            itemViewClazz = mapToViewAnnotation.value();
-        }
 
-        if (itemViewClazz == null) {
-            providerAnnotation = modelClazz.getAnnotation(MapToViewProvider.class);
-            if (providerAnnotation != null) {
-                Class<? extends IItemViewProvider> providerClass = providerAnnotation.value();
-                IItemViewProvider viewProvider = mModelToViewProviderMap.get(providerClass);
-                if (viewProvider == null) {
-                    try {
-                        viewProvider = providerClass.newInstance();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (InstantiationException e) {
-                        e.printStackTrace();
-                    }
+        MapToViewProvider providerAnnotation = modelClazz.getAnnotation(MapToViewProvider.class);
 
+        if (providerAnnotation != null) {
+            Class<? extends IItemViewProvider> providerClass = providerAnnotation.value();
+            IItemViewProvider viewProvider = mModelToViewProviderMap.get(providerClass);
+            if (viewProvider == null) {
+                try {
+                    viewProvider = providerClass.newInstance();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
                 }
-                if (viewProvider != null) {
-                    mModelToViewProviderMap.put(providerClass, viewProvider);
-                    itemViewClazz = viewProvider.getItemView(model, mBaseEventHandlerAgent, position);
-                } else {
-                    if (isDebug) {
-                        String errInfo = String.format("(%s.java:1) must has empty construction method!", viewProvider.getClass().getSimpleName());
-                        throw new RuntimeException(errInfo);
-                    }
+
+            }
+            if (viewProvider != null) {
+                mModelToViewProviderMap.put(providerClass, viewProvider);
+                itemViewClazz = viewProvider.getItemView(model, mBaseEventHandlerAgent, position);
+            } else {
+                if (isDebug) {
+                    String errInfo = String.format("(%s.java:1) must has empty construction method!", viewProvider.getClass().getSimpleName());
+                    throw new RuntimeException(errInfo);
                 }
             }
-        }
-        if (mapToViewAnnotation == null && providerAnnotation == null) {
+        } else {
             if (isDebug) {
-                String errInfo = String.format("(%s.java:0) need annotation: %s!", modelClazz.getSimpleName(), "@" + MapToView.class.getSimpleName() + " or @" + MapToViewProvider.class.getSimpleName());
+                String errInfo = String.format("(%s.java:0) need annotation: %s!", modelClazz.getSimpleName(), "@" + MapToViewProvider.class.getSimpleName());
                 throw new RuntimeException(errInfo);
             }
         }
+
+
         if (itemViewClazz != null) {
             int index = mTypeToViewMap.indexOfValue(itemViewClazz);
             if (index > -1) {

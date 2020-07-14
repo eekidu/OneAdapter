@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 
-import github.kuan.oneadapter.BaseEventAgent;
+import github.kuan.oneadapter.BaseEventHandlerAgent;
 import github.kuan.oneadapter.IItemView;
 import github.kuan.oneadapter.OneAdapter;
 
