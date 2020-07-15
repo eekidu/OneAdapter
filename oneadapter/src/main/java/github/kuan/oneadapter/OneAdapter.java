@@ -24,19 +24,18 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
 
     protected List mDatas;
     protected E mBaseEventHandlerAgent;
+
+//    private HashMap<Class<? extends View>,Integer>
     /**
      * Type到ViewClass的映射
      */
     private SparseArray<Class<? extends View>> mTypeToViewMap;
 
-    /**
-     * Mode到ViewProvider的映射
-     * Model->ViewProvider->ViewClass
-     */
-    private Map<Class, IItemViewProvider> mModelToViewProviderMap = new HashMap<>();
+    private ItemViewProviderManager mItemViewProviderManager;
 
     public OneAdapter() {
         mTypeToViewMap = new SparseArray<>();
+        mItemViewProviderManager = new ItemViewProviderManager();
     }
 
     public OneAdapter(E eventHandlerAgent) {
@@ -100,39 +99,19 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
     public int getItemViewType(int position) {
         Object model = mDatas.get(position);
         Class<?> modelClazz = model.getClass();
+
         Class<? extends View> itemViewClazz = null;
 
-        MapToViewProvider providerAnnotation = modelClazz.getAnnotation(MapToViewProvider.class);
+        IItemViewProvider provider = mItemViewProviderManager.findProvider(modelClazz);
 
-        if (providerAnnotation != null) {
-            Class<? extends IItemViewProvider> providerClass = providerAnnotation.value();
-            IItemViewProvider viewProvider = mModelToViewProviderMap.get(providerClass);
-            if (viewProvider == null) {
-                try {
-                    viewProvider = providerClass.newInstance();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                }
-
-            }
-            if (viewProvider != null) {
-                mModelToViewProviderMap.put(providerClass, viewProvider);
-                itemViewClazz = viewProvider.getItemView(model, mBaseEventHandlerAgent, position);
-            } else {
-                if (isDebug) {
-                    String errInfo = String.format("(%s.java:1) must has empty construction method!", viewProvider.getClass().getSimpleName());
-                    throw new RuntimeException(errInfo);
-                }
-            }
+        if (provider != null) {
+            itemViewClazz = provider.getItemView(position,model, mBaseEventHandlerAgent);
         } else {
             if (isDebug) {
-                String errInfo = String.format("(%s.java:0) need annotation: %s!", modelClazz.getSimpleName(), "@" + MapToViewProvider.class.getSimpleName());
+                String errInfo = String.format("需要注册或者在数据实体上标记IItemViewProvider");
                 throw new RuntimeException(errInfo);
             }
         }
-
 
         if (itemViewClazz != null) {
             int index = mTypeToViewMap.indexOfValue(itemViewClazz);

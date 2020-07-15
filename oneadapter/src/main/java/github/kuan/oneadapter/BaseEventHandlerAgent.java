@@ -30,7 +30,7 @@ public class BaseEventHandlerAgent {
     /**
      * 上层需要向ItemView传递的一些参数
      */
-    private Bundle mExtParams;
+    private Map<Object, Object> mExtParams;
     /**
      * 布局类型
      */
@@ -99,9 +99,9 @@ public class BaseEventHandlerAgent {
         }
     }
 
-    public Bundle getExtParams() {
+    public Map<Object, Object> getExtParams() {
         if (mExtParams == null) {
-            mExtParams = new Bundle();
+            mExtParams = new HashMap<>();
         }
         return mExtParams;
     }
