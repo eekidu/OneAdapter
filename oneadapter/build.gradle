@@ -1,4 +1,12 @@
 apply plugin: 'com.android.library'
+apply from: "https://gitee.com/ksee/KeeServerRuning/raw/master/android/mvnpush.gradle"
+
+ext {
+    GROUP = "github.kuan"
+    ARTIFACT = "oneadapter"
+    VERSION = "1.0.1"
+}
+
 
 android {
     compileSdkVersion 29

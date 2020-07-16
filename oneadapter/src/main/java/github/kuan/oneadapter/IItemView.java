@@ -7,6 +7,6 @@ package github.kuan.oneadapter;
  */
 public interface IItemView<T> {
 
-    void bindData(T data, BaseEventHandlerAgent event, int position);
+    void bindData(int position, T data, BaseEventHandlerAgent event);
 
 }

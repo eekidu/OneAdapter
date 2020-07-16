@@ -72,7 +72,7 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
             Object model = mDatas.get(position);
             IItemView itemView = (IItemView) holderItemView;
             try {
-                itemView.bindData(model, mBaseEventHandlerAgent, position);
+                itemView.bindData(position, model, mBaseEventHandlerAgent);
             } catch (Exception ex) {
                 if (isDebug) {
                     if (ex instanceof ClassCastException) {
@@ -105,7 +105,7 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
         IItemViewProvider provider = mItemViewProviderManager.findProvider(modelClazz);
 
         if (provider != null) {
-            itemViewClazz = provider.getItemView(position,model, mBaseEventHandlerAgent);
+            itemViewClazz = provider.getItemView(position, model, mBaseEventHandlerAgent);
         } else {
             if (isDebug) {
                 String errInfo = String.format("需要注册或者在数据实体上标记IItemViewProvider");
