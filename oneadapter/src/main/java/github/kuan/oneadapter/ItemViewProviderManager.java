@@ -4,18 +4,18 @@ import java.util.HashMap;
 
 public class ItemViewProviderManager {
 
-    private final HashMap<Class, IItemViewProvider> mModelClassToItemViewProviderClassMap;
+    private final HashMap<Class, IItemViewProvider> mModelClassToItemViewProviderMap;
 
     public ItemViewProviderManager() {
-        mModelClassToItemViewProviderClassMap = new HashMap<>();
+        mModelClassToItemViewProviderMap = new HashMap<>();
     }
 
     public void registe(Class model, IItemViewProvider itemViewProvider) {
-        mModelClassToItemViewProviderClassMap.put(model, itemViewProvider);
+        mModelClassToItemViewProviderMap.put(model, itemViewProvider);
     }
 
     public IItemViewProvider findProvider(Class<?> modelClazz) {
-        IItemViewProvider provider = mModelClassToItemViewProviderClassMap.get(modelClazz);
+        IItemViewProvider provider = mModelClassToItemViewProviderMap.get(modelClazz);
         if (provider == null) {
             //2、如果没找到，从数据实体的注解上找,并创建实例ItemViewProvider
             MapToViewProvider providerAnnotation = modelClazz.getAnnotation(MapToViewProvider.class);

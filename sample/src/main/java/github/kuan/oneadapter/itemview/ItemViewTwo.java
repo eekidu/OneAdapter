@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import github.kuan.oneadapter.BaseEventAgent;
+import github.kuan.oneadapter.BaseEventHandlerAgent;
 import github.kuan.oneadapter.IItemView;
 import github.kuan.oneadapter.model.Model2;
 
@@ -33,9 +33,7 @@ public class ItemViewTwo extends LinearLayout implements IItemView<Model2> {
 
 
     @Override
-    public void bindData(Model2 data, BaseEventAgent event, int position) {
-        mTextView.setText(data.hashCode()+"");
+    public void bindData(int position, Model2 data, BaseEventHandlerAgent event) {
+        mTextView.setText(data.hashCode() + "");
     }
-
-
 }

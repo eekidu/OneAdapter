@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 标记在model上，多对多关系，通过ItemViewProvider，使得model映射到某一ItemView。
+ * 标记在model上，通过ItemViewProvider，使得数据Model映射到某一具体ItemView.class。
  *
  * @author kuan
  */

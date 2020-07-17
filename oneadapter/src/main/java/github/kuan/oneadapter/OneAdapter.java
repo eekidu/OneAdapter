@@ -10,9 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import github.kuan.oneadapter.imple.ItemViewWhenError;
 
@@ -72,7 +70,12 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
             Object model = mDatas.get(position);
             IItemView itemView = (IItemView) holderItemView;
             try {
-                itemView.bindData(position, model, mBaseEventHandlerAgent);
+                Class<?> aClass = model.getClass();
+                IItemViewProvider provider = mItemViewProviderManager.findProvider(aClass);
+                if (provider != null) {
+                    provider.onBindDataAgent(position, model, mBaseEventHandlerAgent, itemView);
+                }
+//                itemView.onBindDataAgent(position, model, mBaseEventHandlerAgent);
             } catch (Exception ex) {
                 if (isDebug) {
                     if (ex instanceof ClassCastException) {
@@ -131,6 +134,11 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
         return mDatas == null ? 0 : mDatas.size();
     }
 
+
+    public void setItemViewProviderManager(ItemViewProviderManager itemViewProviderManager) {
+
+        mItemViewProviderManager = itemViewProviderManager;
+    }
 
     /*******************************/
     public List getDatas() {

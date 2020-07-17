@@ -1,7 +1,7 @@
 package github.kuan.oneadapter;
 
 /**
- * ItemView接口，子条目View需要实现该接口，adapter中通过该方法，为View设置数据。
+ * ItemView需要实现该接口，adapter最终会通过该方法，为View绑定数据。
  *
  * @param <T>
  */

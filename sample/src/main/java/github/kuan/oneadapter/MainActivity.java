@@ -25,9 +25,12 @@ public class MainActivity extends AppCompatActivity {
 
         List dataList = mockData();
 
-        BaseEventAgent baseEventAgent = new BaseEventAgent();
-        HeaderOneAdapter<BaseEventAgent> adapter = new HeaderOneAdapter<>(baseEventAgent);
+        BaseEventHandlerAgent baseEventAgent=new BaseEventHandlerAgent();
+        HeaderOneAdapter<BaseEventHandlerAgent> adapter = new HeaderOneAdapter<>(baseEventAgent);
         baseEventAgent.setLayoutManagerType(layoutManager);
+
+
+
         rv.setLayoutManager(layoutManager);
         rv.setAdapter(adapter);
 
