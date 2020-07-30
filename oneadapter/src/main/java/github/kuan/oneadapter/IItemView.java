@@ -9,4 +9,12 @@ public interface IItemView<T> {
 
     void bindData(int position, T data, BaseEventHandlerAgent event);
 
+    /**
+     * 传入Adapter
+     *
+     * @param adapter
+     */
+    default void setAdapter(OneAdapter adapter) {
+    }
+
 }

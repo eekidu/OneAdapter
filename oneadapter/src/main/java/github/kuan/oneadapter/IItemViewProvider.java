@@ -2,6 +2,8 @@ package github.kuan.oneadapter;
 
 import android.view.View;
 
+import java.util.List;
+
 /**
  * ItemView提供者
  *
@@ -28,7 +30,7 @@ public interface IItemViewProvider {
      * @param event
      * @param iItemView
      */
-    default void onBindDataAgent(int position, Object model, BaseEventHandlerAgent event, IItemView<Object> iItemView) {
+    default void onBindDataAgent(int position, Object model, BaseEventHandlerAgent event, IItemView<Object> iItemView, OneAdapter adapter) {
         iItemView.bindData(position, model, event);
     }
 }

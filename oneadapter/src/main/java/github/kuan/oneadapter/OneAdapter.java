@@ -16,6 +16,7 @@ import github.kuan.oneadapter.imple.ItemViewWhenError;
 
 /**
  * @author kuan
+ * todo:通过注解获取指定type
  */
 public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static boolean isDebug = true;
@@ -73,7 +74,7 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
                 Class<?> aClass = model.getClass();
                 IItemViewProvider provider = mItemViewProviderManager.findProvider(aClass);
                 if (provider != null) {
-                    provider.onBindDataAgent(position, model, mBaseEventHandlerAgent, itemView);
+                    provider.onBindDataAgent(position, model, mBaseEventHandlerAgent, itemView, this);
                 }
 //                itemView.onBindDataAgent(position, model, mBaseEventHandlerAgent);
             } catch (Exception ex) {
@@ -106,7 +107,6 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
         Class<? extends View> itemViewClazz = null;
 
         IItemViewProvider provider = mItemViewProviderManager.findProvider(modelClazz);
-
         if (provider != null) {
             itemViewClazz = provider.getItemView(position, model, mBaseEventHandlerAgent);
         } else {
