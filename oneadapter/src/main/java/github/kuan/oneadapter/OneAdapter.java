@@ -33,18 +33,23 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
     private ItemViewProviderManager mItemViewProviderManager;
 
     public OneAdapter() {
-        mTypeToViewMap = new SparseArray<>();
-        mItemViewProviderManager = new ItemViewProviderManager();
+        this(null, null);
+
+    }
+
+    public OneAdapter(List datas) {
+        this(datas, null);
     }
 
     public OneAdapter(E eventHandlerAgent) {
-        this();
-        this.mBaseEventHandlerAgent = eventHandlerAgent;
+        this(null, eventHandlerAgent);
     }
 
     public OneAdapter(List datas, E baseEventHandlerAgent) {
-        this(baseEventHandlerAgent);
-        mDatas = datas;
+        this.mBaseEventHandlerAgent = baseEventHandlerAgent;
+        this.mDatas = datas;
+        mTypeToViewMap = new SparseArray<>();
+        mItemViewProviderManager = new ItemViewProviderManager();
     }
 
     @NonNull
@@ -70,6 +75,12 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
         if (holderItemView instanceof IItemView) {
             Object model = mDatas.get(position);
             IItemView itemView = (IItemView) holderItemView;
+
+            View.OnClickListener itemClickListener = mBaseEventHandlerAgent.getItemClickListener(itemView.getClass());
+            if (itemClickListener != null) {
+                holderItemView.setOnClickListener(itemClickListener);
+            }
+
             try {
                 Class<?> aClass = model.getClass();
                 IItemViewProvider provider = mItemViewProviderManager.findProvider(aClass);
@@ -121,9 +132,26 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
             if (index > -1) {
                 return index;
             } else {
+                int viewType = getItemViewTypeByAnotation(itemViewClazz);
+//                Class<? extends View> oldItemClass = mTypeToViewMap.get(viewType);
+//                if(oldItemClass!=null){
+//                    if (isDebug){
+//                        throw new RuntimeException(String.format("ViewType %d 已经被%s声明，请为"));
+//                    }
+//                }
+
+
                 mTypeToViewMap.put(mTypeToViewMap.size(), itemViewClazz);
                 return mTypeToViewMap.size() - 1;
             }
+        }
+        return -1;
+    }
+
+    private int getItemViewTypeByAnotation(Class<? extends View> itemViewClazz) {
+        ItemTypeHand annotation = itemViewClazz.getAnnotation(ItemTypeHand.class);
+        if (annotation != null) {
+            return annotation.value();
         }
         return -1;
     }

@@ -105,4 +105,12 @@ public class BaseEventHandlerAgent {
         }
         return mExtParams;
     }
+
+    public void putParams(Object key, Object value) {
+        getExtParams().put(key, value);
+    }
+
+    public <T> T getParams(Object key){
+        return (T) getExtParams().get(key);
+    }
 }
