@@ -76,9 +76,11 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
             Object model = mDatas.get(position);
             IItemView itemView = (IItemView) holderItemView;
 
-            View.OnClickListener itemClickListener = mBaseEventHandlerAgent.getItemClickListener(itemView.getClass());
-            if (itemClickListener != null) {
-                holderItemView.setOnClickListener(itemClickListener);
+            if (mBaseEventHandlerAgent != null) {
+                View.OnClickListener itemClickListener = mBaseEventHandlerAgent.getItemClickListener(itemView.getClass());
+                if (itemClickListener != null) {
+                    holderItemView.setOnClickListener(itemClickListener);
+                }
             }
 
             try {
