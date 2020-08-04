@@ -10,7 +10,7 @@ public class ItemViewProviderManager {
         mModelClassToItemViewProviderMap = new HashMap<>();
     }
 
-    public void registe(Class model, IItemViewProvider itemViewProvider) {
+    public void registeItem(Class model, IItemViewProvider itemViewProvider) {
         mModelClassToItemViewProviderMap.put(model, itemViewProvider);
     }
 
@@ -23,7 +23,7 @@ public class ItemViewProviderManager {
                 Class<? extends IItemViewProvider> providerClass = providerAnnotation.value();
                 try {
                     provider = providerClass.newInstance();
-                    registe(modelClazz, provider);
+                    registeItem(modelClazz, provider);
                 } catch (Exception e) {
                     if (OneAdapter.isDebug) {
                         String errInfo = String.format("(%s.java:1) must has empty construction method!", providerClass.getSimpleName());
