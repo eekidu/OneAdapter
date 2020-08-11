@@ -25,9 +25,4 @@ public class SchoolItemProvider implements IItemViewProvider {
         return null;
     }
 
-//    @Override
-//    public void onBindDataAgent(int position, Object model, BaseEventHandlerAgent event, IItemView<Object> iItemView) {
-//
-//        iItemView.bindData(position, model, event);
-//    }
 }
