@@ -63,8 +63,10 @@ public class MainActivity extends AppCompatActivity {
         rv.setLayoutManager(layoutManager);
         rv.setAdapter(adapter);
 
+        //设置数据
         adapter.setmDatas(dataList);
 
+        //添加头部View
         TextView textView = new TextView(this);
         textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 200));
         textView.setText("我是头部布局");

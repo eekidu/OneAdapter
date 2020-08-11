@@ -36,6 +36,7 @@ public class ItemViewShcoolHight extends LinearLayout implements IItemView<Schoo
         mRecyclerView = new RecyclerView(context);
         addView(mTextView);
         addView(mRecyclerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL));
     }
 
     @Override
@@ -44,7 +45,7 @@ public class ItemViewShcoolHight extends LinearLayout implements IItemView<Schoo
         OneAdapter<BaseEventHandlerAgent> oneAdapter = new OneAdapter<>(data.gradeClassList, event);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL));
+
         mRecyclerView.setAdapter(oneAdapter);
     }
 }
