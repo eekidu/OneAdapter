@@ -32,6 +32,7 @@ public class ItemViewShcoolHight extends LinearLayout implements IItemView<Schoo
     public ItemViewShcoolHight(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setOrientation(VERTICAL);
+        setPadding(0, 60, 0, 60);
         mTextView = new TextView(context);
         mRecyclerView = new RecyclerView(context);
         addView(mTextView);

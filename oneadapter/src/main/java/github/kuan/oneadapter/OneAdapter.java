@@ -16,7 +16,6 @@ import github.kuan.oneadapter.imple.ItemViewWhenError;
 
 /**
  * @author kuan
- * todo:通过注解获取指定type
  */
 public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static boolean isDebug = true;
@@ -24,7 +23,6 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
     protected List mDatas;
     protected E mBaseEventHandlerAgent;
 
-//    private HashMap<Class<? extends View>,Integer>
     /**
      * Type到ViewClass的映射
      */
@@ -89,7 +87,6 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
                 if (provider != null) {
                     provider.onBindDataAgent(position, model, mBaseEventHandlerAgent, itemView, this);
                 }
-//                itemView.onBindDataAgent(position, model, mBaseEventHandlerAgent);
             } catch (Exception ex) {
                 if (isDebug) {
                     if (ex instanceof ClassCastException) {
@@ -134,26 +131,9 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
             if (index > -1) {
                 return index;
             } else {
-                int viewType = getItemViewTypeByAnotation(itemViewClazz);
-//                Class<? extends View> oldItemClass = mTypeToViewMap.get(viewType);
-//                if(oldItemClass!=null){
-//                    if (isDebug){
-//                        throw new RuntimeException(String.format("ViewType %d 已经被%s声明，请为"));
-//                    }
-//                }
-
-
                 mTypeToViewMap.put(mTypeToViewMap.size(), itemViewClazz);
                 return mTypeToViewMap.size() - 1;
             }
-        }
-        return -1;
-    }
-
-    private int getItemViewTypeByAnotation(Class<? extends View> itemViewClazz) {
-        ItemTypeHand annotation = itemViewClazz.getAnnotation(ItemTypeHand.class);
-        if (annotation != null) {
-            return annotation.value();
         }
         return -1;
     }

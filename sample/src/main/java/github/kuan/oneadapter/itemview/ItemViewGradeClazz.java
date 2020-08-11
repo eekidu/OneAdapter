@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import github.kuan.oneadapter.BaseEventHandlerAgent;
 import github.kuan.oneadapter.IItemView;
 import github.kuan.oneadapter.OneAdapter;
+import github.kuan.oneadapter.R;
 import github.kuan.oneadapter.model.GradeClassModel;
 
 public class ItemViewGradeClazz extends LinearLayout implements IItemView<GradeClassModel> {
@@ -32,6 +33,9 @@ public class ItemViewGradeClazz extends LinearLayout implements IItemView<GradeC
     public ItemViewGradeClazz(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setOrientation(VERTICAL);
+//        int dimension = (int)getResources().getDimension(R.dimen.padding);
+        int dimension = 60;
+        setPadding(0, dimension, 0, dimension);
         mTextView = new TextView(context);
         addView(mTextView);
 
