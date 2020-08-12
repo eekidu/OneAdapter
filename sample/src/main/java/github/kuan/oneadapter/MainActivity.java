@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
         studentModel.name = "我是特等生";
         dataList.add(studentModel);
 
+        dataList.addAll(someStudent());
+
 
         BaseEventHandlerAgent baseEventAgent = new BaseEventHandlerAgent();
 //        baseEventAgent.setOnItemClickListener(ItemViewStudent.class, new View.OnClickListener() {
@@ -95,22 +97,25 @@ public class MainActivity extends AppCompatActivity {
 
 
     private List mockGradeClass() {
-        List<GradeClassModel> dataList = new ArrayList<>();
-        for (int i = 1; i < 10; i++) {
-            for (int j = 1; j < 10; j++) {
+        List dataList = new ArrayList<>();
+        for (int i = 1; i < 6; i++) {
+            for (int j = 1; j < 5; j++) {
                 GradeClassModel gradeClassModel = new GradeClassModel(i, j);
                 gradeClassModel.mStudentModelList = someStudent();
                 dataList.add(gradeClassModel);
 
             }
         }
+        StudentModel studentModel = new StudentModel();
+        studentModel.name = "个体学生";
+        dataList.add(studentModel);
         return dataList;
     }
 
 
     private List someStudent() {
         List list = new ArrayList();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 10; i++) {
             StudentModel studentModel = new StudentModel();
             studentModel.name = "学生" + i;
             list.add(studentModel);

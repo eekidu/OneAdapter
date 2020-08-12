@@ -2,17 +2,18 @@ package github.kuan.oneadapter;
 
 import android.content.Context;
 import android.util.SparseArray;
+import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.collection.LruCache;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import github.eekidu.android.base.util.timecost.CostTimeUtil;
 import github.kuan.oneadapter.imple.ItemViewWhenError;
 
 /**
@@ -23,6 +24,7 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
 
     protected List mDatas;
     protected E mBaseEventHandlerAgent;
+    protected SparseIntArray mSparseIntArray;
 
     /**
      * Type到ViewClass的映射
@@ -113,6 +115,8 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
     @Override
     public int getItemViewType(int position) {
 
+        CostTimeUtil.start("getItemViewType");
+
         Object model = mDatas.get(position);
         Class<?> modelClazz = model.getClass();
 
@@ -131,9 +135,11 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
         if (itemViewClazz != null) {
             int index = mTypeToViewMap.indexOfValue(itemViewClazz);
             if (index > -1) {
+                CostTimeUtil.end("getItemViewType");
                 return index;
             } else {
                 mTypeToViewMap.put(mTypeToViewMap.size(), itemViewClazz);
+                CostTimeUtil.end("getItemViewType");
                 return mTypeToViewMap.size() - 1;
             }
         }

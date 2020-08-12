@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "github.kuan.oneadapter"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -39,5 +39,6 @@ dependencies {
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
 
     api "github.kuan:commdp:1.1.0-202008101835-SNAPSHOT"
+    api "github.kuan:base:1.1.1-202007252240-SNAPSHOT"
 
 }

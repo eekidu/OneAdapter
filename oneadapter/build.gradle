@@ -46,4 +46,5 @@ dependencies {
     compileOnly 'androidx.recyclerview:recyclerview:1.1.0'
 
     api "github.kuan:commdp:1.1.0-202008101835-SNAPSHOT"
+    api "github.kuan:base:1.1.1-202007252240-SNAPSHOT"
 }
