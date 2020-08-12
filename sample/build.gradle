@@ -38,4 +38,6 @@ dependencies {
     api project(":oneadapter")
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
 
+    api "github.kuan:commdp:1.1.0-202008101835-SNAPSHOT"
+
 }
