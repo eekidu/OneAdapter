@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.collection.LruCache;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.lang.reflect.Constructor;
@@ -111,6 +112,7 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
 
     @Override
     public int getItemViewType(int position) {
+
         Object model = mDatas.get(position);
         Class<?> modelClazz = model.getClass();
 

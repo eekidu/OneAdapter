@@ -22,6 +22,8 @@ allprojects {
     }
 }
 
+
+apply from:"https://gitee.com/ksee/KeeServerRuning/raw/master/android/project_build.gradle"
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
