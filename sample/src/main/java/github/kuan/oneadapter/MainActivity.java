@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 import github.kuan.oneadapter.ext.HeaderOneAdapter;
+import github.kuan.oneadapter.itemview.ItemViewGradeClazz;
 import github.kuan.oneadapter.itemview.ItemViewStudent;
 import github.kuan.oneadapter.model.GradeClassModel;
 import github.kuan.oneadapter.model.SchoolModel;
@@ -22,10 +23,20 @@ import github.kuan.oneadapter.model.StudentModel;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static RecyclerView.RecycledViewPool sPool;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sPool=new RecyclerView.RecycledViewPool();
+
+        MainActivity.sPool.setMaxRecycledViews(ItemViewStudent.class.hashCode(), 5000);
+        MainActivity.sPool.setMaxRecycledViews(ItemViewGradeClazz.class.hashCode(), 100);
+
+
+
         RecyclerView rv = new RecyclerView(this);
+        rv.setRecycledViewPool(sPool);
         setContentView(rv);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
@@ -50,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
 //                Toast.makeText(MainActivity.this, "学生条目点击", Toast.LENGTH_SHORT).show();
 //            }
 //        });
+
 
         baseEventAgent.registerCustomListener(ItemViewStudent.OnSutdentItemClick.class, new ItemViewStudent.OnSutdentItemClick() {
             @Override
@@ -98,8 +110,8 @@ public class MainActivity extends AppCompatActivity {
 
     private List mockGradeClass() {
         List dataList = new ArrayList<>();
-        for (int i = 1; i < 6; i++) {
-            for (int j = 1; j < 5; j++) {
+        for (int i = 1; i < 100; i++) {
+            for (int j = 1; j < 10; j++) {
                 GradeClassModel gradeClassModel = new GradeClassModel(i, j);
                 gradeClassModel.mStudentModelList = someStudent();
                 dataList.add(gradeClassModel);

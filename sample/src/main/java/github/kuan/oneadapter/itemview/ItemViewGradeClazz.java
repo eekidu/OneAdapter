@@ -2,6 +2,7 @@ package github.kuan.oneadapter.itemview;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import github.kuan.oneadapter.BaseEventHandlerAgent;
 import github.kuan.oneadapter.IItemView;
+import github.kuan.oneadapter.MainActivity;
 import github.kuan.oneadapter.OneAdapter;
 import github.kuan.oneadapter.R;
 import github.kuan.oneadapter.model.GradeClassModel;
@@ -20,6 +22,7 @@ public class ItemViewGradeClazz extends LinearLayout implements IItemView<GradeC
 
     public TextView mTextView;
     private RecyclerView mRecyclerView;
+    private OneAdapter<BaseEventHandlerAgent> mOneAdapter;
 
     public ItemViewGradeClazz(Context context) {
         this(context, null);
@@ -40,16 +43,26 @@ public class ItemViewGradeClazz extends LinearLayout implements IItemView<GradeC
         addView(mTextView);
 
         mRecyclerView = new RecyclerView(context);
-        addView(mRecyclerView, new ViewGroup.LayoutParams(300, ViewGroup.LayoutParams.WRAP_CONTENT));
+        addView(mRecyclerView, new ViewGroup.LayoutParams(20, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+
+        mRecyclerView.setRecycledViewPool(MainActivity.sPool);
+
+
+        mOneAdapter = new OneAdapter<>();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        layoutManager.setRecycleChildrenOnDetach(true);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setAdapter(mOneAdapter);
+        mRecyclerView.setItemViewCacheSize(10000);
     }
 
     @Override
     public void bindData(int position, GradeClassModel data, BaseEventHandlerAgent event) {
         mTextView.setText(data.toString());
 
-        OneAdapter<BaseEventHandlerAgent> oneAdapter = new OneAdapter<>(data.mStudentModelList, event);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setAdapter(oneAdapter);
+        mOneAdapter.setEventAgent(event);
+        mOneAdapter.setmDatas(data.mStudentModelList);
+        Log.d("1234", "ItemViewGradeClazz: " + data.mStudentModelList.size());
     }
 }

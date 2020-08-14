@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import github.kuan.oneadapter.BaseEventHandlerAgent;
 import github.kuan.oneadapter.IItemView;
+import github.kuan.oneadapter.MainActivity;
 import github.kuan.oneadapter.OneAdapter;
 import github.kuan.oneadapter.model.SchoolModel;
 
@@ -20,6 +21,7 @@ public class ItemViewShcoolHight extends LinearLayout implements IItemView<Schoo
 
     public TextView mTextView;
     private RecyclerView mRecyclerView;
+    private OneAdapter<BaseEventHandlerAgent> mOneAdapter;
 
     public ItemViewShcoolHight(Context context) {
         this(context, null);
@@ -38,15 +40,21 @@ public class ItemViewShcoolHight extends LinearLayout implements IItemView<Schoo
         addView(mTextView);
         addView(mRecyclerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL));
+        mRecyclerView.setRecycledViewPool(MainActivity.sPool);
+
+        mOneAdapter = new OneAdapter<>();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
+        mRecyclerView.setLayoutManager(layoutManager);
+        layoutManager.setRecycleChildrenOnDetach(true);
+
+        mRecyclerView.setAdapter(mOneAdapter);
     }
 
     @Override
     public void bindData(int position, SchoolModel data, BaseEventHandlerAgent event) {
         mTextView.setText(data.getLevelLabel());
-        OneAdapter<BaseEventHandlerAgent> oneAdapter = new OneAdapter<>(data.gradeClassList, event);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
-        mRecyclerView.setLayoutManager(layoutManager);
 
-        mRecyclerView.setAdapter(oneAdapter);
+        mOneAdapter.setEventAgent(event);
+        mOneAdapter.setmDatas(data.gradeClassList);
     }
 }

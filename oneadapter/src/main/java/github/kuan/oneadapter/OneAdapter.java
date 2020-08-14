@@ -33,6 +33,7 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
 
     private ItemViewProviderManager mItemViewProviderManager;
 
+
     public OneAdapter() {
         this(null, null);
 
@@ -85,8 +86,8 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
             }
 
             try {
-                Class<?> aClass = model.getClass();
-                IItemViewProvider provider = mItemViewProviderManager.findProvider(aClass);
+                Class<?> modelClass = model.getClass();
+                IItemViewProvider provider = mItemViewProviderManager.findProvider(modelClass);
                 if (provider != null) {
                     provider.onBindDataAgent(position, model, mBaseEventHandlerAgent, itemView, this);
                 }
@@ -115,6 +116,7 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
     @Override
     public int getItemViewType(int position) {
 
+
         CostTimeUtil.start("getItemViewType");
 
         Object model = mDatas.get(position);
@@ -133,15 +135,19 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
         }
 
         if (itemViewClazz != null) {
-            int index = mTypeToViewMap.indexOfValue(itemViewClazz);
-            if (index > -1) {
-                CostTimeUtil.end("getItemViewType");
-                return index;
-            } else {
-                mTypeToViewMap.put(mTypeToViewMap.size(), itemViewClazz);
-                CostTimeUtil.end("getItemViewType");
-                return mTypeToViewMap.size() - 1;
-            }
+            int itemViewType = itemViewClazz.hashCode();
+            mTypeToViewMap.put(itemViewType,itemViewClazz);
+            return itemViewType;
+
+//            int index = mTypeToViewMap.indexOfValue(itemViewClazz);
+//            if (index > -1) {
+//                CostTimeUtil.end("getItemViewType");
+//                return index;
+//            } else {
+//                mTypeToViewMap.put(mTypeToViewMap.size(), itemViewClazz);
+//                CostTimeUtil.end("getItemViewType");
+//                return mTypeToViewMap.size() - 1;
+//            }
         }
         return -1;
     }
@@ -200,5 +206,9 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
             mDatas = datas;
             notifyDataSetChanged();
         }
+    }
+
+    public void setEventAgent(E event) {
+        mBaseEventHandlerAgent=event;
     }
 }
