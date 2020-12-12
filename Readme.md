@@ -1,12 +1,11 @@
 [![jitPack](https://jitpack.io/v/eekidu/OneAdapter.svg)](https://jitpack.io/#eekidu/OneAdapter)
 
-Recycler使用过程中，一条数据绑定到对应ItemView上，过程是很繁琐的，尤其是在处理多类型样式的时候，我们除了要处理数据model和ItemView以外，还要处理ViewType、ViewHolder、BindData、事件回调等等。
-该库是为了简化该过程。基于注解，使数据实体与ItemView进行关联。
+# 一个RecyclerAdapter
 
-这里有一个约定：ItemView需要实现接口ItemView。
+该库的目的是简化RecyclerView的Adapter的使用，就是全局只有一个Adapter。基于注解和约定，使数据实体与ItemView绑定变得非常简洁，无需维护Type、ViewHolder。
 
-简单用法：
-1、
+### 简单用法：
+1、步骤一：在数据实体上加注解，指定要绑定的ItemView。
 ```
 @ItemViewAno(ItemViewVideoView.class)
 public class VideoModel {
@@ -14,7 +13,9 @@ public class VideoModel {
 }
 
 ```
-2、
+
+2、步骤二：itemView
+
 ```
 public class ItemViewVideoView extends LinearLayout implements ItemView<VideoModel> {
 
@@ -43,10 +44,10 @@ public class ItemViewVideoView extends LinearLayout implements ItemView<VideoMod
 
 
 
-# 一个RecyclerAdapter
+
 
 特点：
 - 简洁
 这也是封装该库原因，通过一种约定，达到使用起来非常简洁的效果。数据实体类上标记使用的ItemView既可。
 - 安全
-某一个ItemView的创建、或是数据绑定出现异常，会进行隐藏该条目，不会对其他条目产生影响，更不会是程序崩溃
+某一个ItemView的创建、或是数据绑定出现异常，会隐藏该条目，不会对其他条目产生影响，更不会是程序崩溃。
