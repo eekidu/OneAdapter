@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,14 @@ import github.kuan.oneadapter.listener.OnItemClickListener;
  * @author kuan
  */
 public class OneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    /**
+     * debug开关，影响异常的处理方式。release会隐藏掉异常的ItemView。
+     */
     private static boolean isDebug = true;
+
+    /**
+     * 开发阶段，会把异常作为item进行显示，不影响调试其他条目。
+     */
     private static boolean isInDeveloping = true;
 
     public static boolean isDebug() {
@@ -38,7 +46,6 @@ public class OneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static void setDebug(boolean isDebug, boolean isInDeveloping) {
         OneAdapter.isDebug = isDebug;
         OneAdapter.isInDeveloping = isInDeveloping;
-
     }
 
 
@@ -59,6 +66,8 @@ public class OneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final ItemViewRouterManager mItemViewRouterManager;
 
+    private WeakReference<RecyclerView> mRecyclerViewWeakReference;
+
     public OneAdapter() {
         this(null, null);
     }
@@ -78,6 +87,24 @@ public class OneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         mItemViewRouterManager = new ItemViewRouterManager();
     }
 
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        mRecyclerViewWeakReference = new WeakReference<>(recyclerView);
+        if (mEventMessenger != null) {
+            mEventMessenger.setRecyclerView(recyclerView);
+        }
+    }
+
+    public void setEventMessenger(BaseEventMessenger eventMessenger) {
+        this.mEventMessenger = eventMessenger;
+        if (mRecyclerViewWeakReference != null && mRecyclerViewWeakReference.get() != null) {
+            mEventMessenger.setRecyclerView(mRecyclerViewWeakReference.get());
+        }
+        if (mTypeToViewMap.size() > 0) {
+            notifyDataSetChanged();
+        }
+    }
 
     @Override
     public int getItemViewType(int position) {
@@ -263,13 +290,6 @@ public class OneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void setDataList(List datas) {
         if (datas != null) {
             mDataList = datas;
-            notifyDataSetChanged();
-        }
-    }
-
-    public void setEventMessenger(BaseEventMessenger eventMessenger) {
-        this.mEventMessenger = eventMessenger;
-        if (mTypeToViewMap.size() > 0) {
             notifyDataSetChanged();
         }
     }

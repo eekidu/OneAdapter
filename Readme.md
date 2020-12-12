@@ -89,9 +89,11 @@ public class NewsItemViewRouter implements ItemViewRouter<NewsModel> {
 剩下的就是把OneAdapter设置给RecyclerView，同上。
 
 #### 3、通信
+BaseEventMessenger是ItemView与上层页面之间相互通信的一个信使。它可以持有上层页面的一些参数 传递给每个ItemView。ItemView的点击回调或者自定义回调，都是通过它传递给ItemView的。详见DemoEventMessenger实现。
 
 
 #### 总结：
 
-- 简洁。当进行Item类型扩展时，会非常简洁高效。只需新增数据实体，完成新样式的ItemView既可，无效改动已有代码。
+- 简洁，结构清晰。当进行Item类型扩展时，会非常简洁高效。只需新增数据实体，完成新样式的ItemView既可，无效改动已有代码。
+- 复用性高，ItemView的样式与BaseEventMessenger中的事件处理，在不同页面都可以得到很好的复用。
 - 安全。某一个ItemView的创建、或是数据绑定出现异常，会隐藏该条目，不会对其他条目产生影响，更不会是程序崩溃。

@@ -1,7 +1,5 @@
 package github.kuan.oneadapter;
 
-import android.view.View;
-
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.lang.ref.WeakReference;
@@ -22,7 +20,7 @@ import github.kuan.oneadapter.listener.OnItemClickListener;
  */
 public class BaseEventMessenger {
 
-    private final WeakReference<RecyclerView> mRv;
+    private WeakReference<RecyclerView> mRecyclerViewWeakReference;
     /**
      * 上层需要向ItemView传递的一些参数
      */
@@ -42,10 +40,9 @@ public class BaseEventMessenger {
      */
     private Map<Class, Object> mCustomListeners;
 
-    public BaseEventMessenger(RecyclerView rv) {
-        mRv = new WeakReference<RecyclerView>(rv);
+    public void setRecyclerView(RecyclerView recyclerView) {
+        mRecyclerViewWeakReference = new WeakReference<>(recyclerView);
     }
-
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         mItemClickListener = onItemClickListener;
@@ -103,8 +100,8 @@ public class BaseEventMessenger {
     }
 
     public RecyclerView.LayoutManager getLayoutManager() {
-        if (mRv != null && mRv.get() != null) {
-            return mRv.get().getLayoutManager();
+        if (mRecyclerViewWeakReference != null && mRecyclerViewWeakReference.get() != null) {
+            return mRecyclerViewWeakReference.get().getLayoutManager();
         }
         return null;
     }

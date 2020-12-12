@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addClickListener(RecyclerView recycler, HeaderOneAdapter oneAdapter) {
-        BaseEventMessenger demoEventMessage = new DemoEventMessenger(MainActivity.this, recycler);
+        BaseEventMessenger demoEventMessage = new DemoEventMessenger(MainActivity.this);
         oneAdapter.setEventMessenger(demoEventMessage);
 
     }

@@ -40,8 +40,7 @@ public class DemoEventMessenger extends BaseEventMessenger {
         }
     };
 
-    public DemoEventMessenger(Context context, RecyclerView rv) {
-        super(rv);
+    public DemoEventMessenger(Context context) {
         mContext = context;
         setOnItemClickListener(mOnItemClickListener);
         registerCustomListener(ItemViewNewsType3.OnNewsType1ClickListener.class, item3ClickListener);
