@@ -1,18 +1,12 @@
 package github.kuan.oneadapter;
 
 import android.os.Bundle;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
