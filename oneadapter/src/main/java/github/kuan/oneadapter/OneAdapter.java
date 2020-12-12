@@ -138,11 +138,22 @@ public class OneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         if (itemViewClazz != null) {
-            int itemViewType = itemViewClazz.hashCode();
+            int itemViewType = generateTypeBy(itemViewClazz);
             mTypeToViewMap.put(itemViewType, itemViewClazz);
             return itemViewType;
         }
         return -1;
+    }
+
+    /**
+     * 根据ItemView的class对象生成唯一且固定的Type。
+     * 这里不用放入集合中的index做Type值是因为多个adapter时，同一种ItemView的Type不固定，不利于全局的复用。
+     *
+     * @param itemViewClazz
+     * @return
+     */
+    private int generateTypeBy(Class<? extends View> itemViewClazz) {
+        return itemViewClazz.hashCode();//没想到特别好的，暂时用hashCode，可能会
     }
 
     @Override
@@ -167,7 +178,6 @@ public class OneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
         notifyDataSetChanged();
     }
-
 
     public void addItem(Object baseBean) {
         if (baseBean == null) {

@@ -1,13 +1,10 @@
 package github.kuan.oneadapter;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,13 +15,12 @@ import java.util.List;
 import github.kuan.oneadapter.demo.model.NewsModel;
 import github.kuan.oneadapter.demo.model.VideoModel;
 import github.kuan.oneadapter.ext.HeaderOneAdapter;
-import github.kuan.oneadapter.interfaces.ItemView;
-import github.kuan.oneadapter.interfaces.ItemViewRouter;
 import github.kuan.oneadapter.itemview.ItemViewGradeClazz;
 import github.kuan.oneadapter.itemview.ItemViewStudent;
 import github.kuan.oneadapter.model.GradeClassModel;
 import github.kuan.oneadapter.model.SchoolModel;
 import github.kuan.oneadapter.model.StudentModel;
+import github.kuan.oneadapter.util.DevRecyclerUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 //        demo1(rv);
         demo2(rv);
 
-
+        DevRecyclerUtil.openDev(this);
     }
 
     private void demo2(RecyclerView rv) {
@@ -49,13 +45,35 @@ public class MainActivity extends AppCompatActivity {
         objects.add(new VideoModel());
         objects.add(new NewsModel(1));
         objects.add(new NewsModel(2));
+        objects.add(new NewsModel(2));
+        objects.add(new NewsModel(2));
+        objects.add(new NewsModel(2));
+        objects.add(new NewsModel(1));
+        objects.add(new NewsModel(1));
+        objects.add(new VideoModel());
 
-        OneAdapter oneAdapter = new OneAdapter();
+        HeaderOneAdapter oneAdapter = new HeaderOneAdapter();
         oneAdapter.setmDatas(objects);
 
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(oneAdapter);
 
+
+        addHeaderFooter(oneAdapter);
+
+    }
+
+    private void addHeaderFooter(HeaderOneAdapter oneAdapter) {
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 300);
+        TextView textView = new TextView(this);
+        textView.setText("我是头布局");
+        textView.setLayoutParams(layoutParams);
+        oneAdapter.addHeaderView(textView);
+
+        TextView footer = new TextView(this);
+        footer.setText("我是尾布局");
+        footer.setLayoutParams(layoutParams);
+        oneAdapter.addFootView(footer);
     }
 
     private void demo1(RecyclerView rv) {
@@ -99,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        HeaderOneAdapter<BaseEventMessenger> adapter = new HeaderOneAdapter<>(baseEventAgent);
+        HeaderOneAdapter adapter = new HeaderOneAdapter(baseEventAgent);
 
 
         rv.setLayoutManager(layoutManager);
@@ -116,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private List mockData() {
-
 
         List list = new ArrayList<>();
 //        for (int i = 0; i < 20; i++) {

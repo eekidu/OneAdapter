@@ -1,6 +1,7 @@
 package github.kuan.oneadapter.imple;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 
@@ -22,6 +23,8 @@ public class ItemViewWhenError extends AppCompatTextView implements ItemView {
 
     public ItemViewWhenError(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        int padding = (int)Resources.getSystem().getDisplayMetrics().density * 20;
+        setPadding(0, padding, 0, 0);
     }
 
     @Override

@@ -7,10 +7,12 @@ import androidx.annotation.NonNull;
 import androidx.collection.SparseArrayCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
+
 import github.kuan.oneadapter.BaseEventMessenger;
 import github.kuan.oneadapter.OneAdapter;
 
-public class HeaderOneAdapter<E> extends OneAdapter {
+public class HeaderOneAdapter extends OneAdapter {
     private static final int BASE_ITEM_TYPE_HEADER = 100000;
     private static final int BASE_ITEM_TYPE_FOOTER = 200000;
 
@@ -20,8 +22,16 @@ public class HeaderOneAdapter<E> extends OneAdapter {
     public HeaderOneAdapter() {
     }
 
-    public HeaderOneAdapter(BaseEventMessenger baseEventMessenger) {
-        super(baseEventMessenger);
+    public HeaderOneAdapter(List dataList) {
+        super(dataList);
+    }
+
+    public HeaderOneAdapter(BaseEventMessenger eventHandlerAgent) {
+        super(eventHandlerAgent);
+    }
+
+    public HeaderOneAdapter(List dataList, BaseEventMessenger eventMessenger) {
+        super(dataList, eventMessenger);
     }
 
     @NonNull
@@ -33,7 +43,7 @@ public class HeaderOneAdapter<E> extends OneAdapter {
             };
         }
 
-        view = mHeaderViews.get(viewType);
+        view = mFootViews.get(viewType);
         if (view != null) {
             return new RecyclerView.ViewHolder(view) {
             };
@@ -66,7 +76,7 @@ public class HeaderOneAdapter<E> extends OneAdapter {
 
     @Override
     public int getItemCount() {
-        return getHeadersCount() + getFootersCount() + super.getItemCount();
+        return getHeadersCount() + super.getItemCount() + getFootersCount();
     }
 
     private boolean isHeaderViewPos(int position) {
@@ -79,11 +89,13 @@ public class HeaderOneAdapter<E> extends OneAdapter {
 
 
     public void addHeaderView(View view) {
-        mHeaderViews.put(mHeaderViews.size() + BASE_ITEM_TYPE_HEADER, view);
+        mHeaderViews.put(view.hashCode(), view);
+        notifyDataSetChanged();
     }
 
     public void addFootView(View view) {
-        mFootViews.put(mFootViews.size() + BASE_ITEM_TYPE_FOOTER, view);
+        mFootViews.put(view.hashCode(), view);
+        notifyDataSetChanged();
     }
 
     public int getHeadersCount() {

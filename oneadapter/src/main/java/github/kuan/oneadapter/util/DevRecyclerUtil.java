@@ -4,47 +4,28 @@ import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.lang.ref.WeakReference;
-
-public class DevRecyclerItemDecoration extends RecyclerView.ItemDecoration {
-    private WeakReference<View> mWeakReference;
-
+public class DevRecyclerUtil extends RecyclerView.ItemDecoration {
     public static final int TEXTSIZE = 16;
 
     private final Paint mPaint;
 
-    public DevRecyclerItemDecoration() {
+    public static void openDev(Activity activity) {
+        ViewGroup root = activity.findViewById(android.R.id.content);
+        addItemDecora(root);
+    }
+
+
+    public DevRecyclerUtil() {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setTextSize(TEXTSIZE);
         mPaint.setColor(Color.BLUE);
-
-    }
-
-    private View.OnLongClickListener mLongClickListener = new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View v) {
-            mWeakReference = new WeakReference<>(v);
-            ((RecyclerView)v.getParent()).invalidateItemDecorations();
-            return true;
-        }
-    };
-
-
-    @Override
-    public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-        super.getItemOffsets(outRect, view, parent, state);
-        view.setOnLongClickListener(mLongClickListener);
-        if (mWeakReference != null && mWeakReference.get() == view) {
-            outRect.bottom = 200;
-        }
 
     }
 
@@ -58,17 +39,11 @@ public class DevRecyclerItemDecoration extends RecyclerView.ItemDecoration {
             int right = childAt.getRight();
 
             String simpleName = childAt.getClass().getSimpleName();
-            float v = mPaint.measureText(simpleName);
-            float top = mPaint.getFontMetrics().top;
+            float textWidth = mPaint.measureText(simpleName);
+            float textHigh = mPaint.getFontMetrics().descent - mPaint.getFontMetrics().ascent;
 
-            c.drawText(simpleName, right - v - 20, bottom - TEXTSIZE, mPaint);
+            c.drawText(simpleName, right - textWidth - 20, bottom - textHigh, mPaint);
         }
-    }
-
-
-    public static void openDev(Activity activity) {
-        ViewGroup root = activity.findViewById(android.R.id.content);
-        addItemDecora(root);
     }
 
     private static void addItemDecora(ViewGroup root) {
@@ -78,7 +53,7 @@ public class DevRecyclerItemDecoration extends RecyclerView.ItemDecoration {
             if (childAt instanceof ViewGroup) {
                 addItemDecora((ViewGroup) childAt);
                 if (childAt instanceof RecyclerView) {
-                    ((RecyclerView) childAt).addItemDecoration(new DevRecyclerItemDecoration());
+                    ((RecyclerView) childAt).addItemDecoration(new DevRecyclerUtil());
                 }
             }
         }
