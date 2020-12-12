@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         DevRecyclerUtil.openDev(this);
     }
 
-    private void demo2(RecyclerView rv) {
+    private void demo2(RecyclerView recycler) {
         List<Object> objects = new ArrayList<>();
 
         objects.add(new VideoModel());
@@ -55,9 +55,8 @@ public class MainActivity extends AppCompatActivity {
         HeaderOneAdapter oneAdapter = new HeaderOneAdapter();
         oneAdapter.setmDatas(objects);
 
-        rv.setLayoutManager(new LinearLayoutManager(this));
-        rv.setAdapter(oneAdapter);
-
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+        recycler.setAdapter(oneAdapter);
 
         addHeaderFooter(oneAdapter);
 
@@ -76,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         oneAdapter.addFootView(footer);
     }
 
+    @Deprecated
     private void demo1(RecyclerView rv) {
         sPool = new RecyclerView.RecycledViewPool();
 
