@@ -17,9 +17,10 @@ allprojects {
 	}
 }
 
-	dependencies {
-	        implementation 'com.github.eekidu:OneAdapter:**'
-	}
+
+dependencies {
+	implementation 'com.github.eekidu:OneAdapter:**'
+}
 ```
 
 
