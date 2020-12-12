@@ -1,5 +1,7 @@
 package github.kuan.oneadapter;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,9 +14,12 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
+import github.kuan.oneadapter.demo.model.NewsModel;
+import github.kuan.oneadapter.demo.model.VideoModel;
 import github.kuan.oneadapter.ext.HeaderOneAdapter;
+import github.kuan.oneadapter.interfaces.ItemView;
+import github.kuan.oneadapter.interfaces.ItemViewRouter;
 import github.kuan.oneadapter.itemview.ItemViewGradeClazz;
 import github.kuan.oneadapter.itemview.ItemViewStudent;
 import github.kuan.oneadapter.model.GradeClassModel;
@@ -28,16 +33,40 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sPool=new RecyclerView.RecycledViewPool();
+        RecyclerView rv = new RecyclerView(this);
+        setContentView(rv);
+
+
+//        demo1(rv);
+        demo2(rv);
+
+
+    }
+
+    private void demo2(RecyclerView rv) {
+        List<Object> objects = new ArrayList<>();
+
+        objects.add(new VideoModel());
+        objects.add(new NewsModel(1));
+        objects.add(new NewsModel(2));
+
+        OneAdapter oneAdapter = new OneAdapter();
+        oneAdapter.setmDatas(objects);
+
+        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setAdapter(oneAdapter);
+
+    }
+
+    private void demo1(RecyclerView rv) {
+        sPool = new RecyclerView.RecycledViewPool();
 
         MainActivity.sPool.setMaxRecycledViews(ItemViewStudent.class.hashCode(), 5000);
         MainActivity.sPool.setMaxRecycledViews(ItemViewGradeClazz.class.hashCode(), 100);
 
 
-
-        RecyclerView rv = new RecyclerView(this);
         rv.setRecycledViewPool(sPool);
-        setContentView(rv);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
         List dataList = mockData();
@@ -54,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         dataList.addAll(someStudent());
 
 
-        BaseEventHandlerAgent baseEventAgent = new BaseEventHandlerAgent();
+        BaseEventMessenger baseEventAgent = new BaseEventMessenger(rv);
 //        baseEventAgent.setOnItemClickListener(ItemViewStudent.class, new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -70,8 +99,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        HeaderOneAdapter<BaseEventHandlerAgent> adapter = new HeaderOneAdapter<>(baseEventAgent);
-        baseEventAgent.setLayoutManagerType(layoutManager);
+        HeaderOneAdapter<BaseEventMessenger> adapter = new HeaderOneAdapter<>(baseEventAgent);
 
 
         rv.setLayoutManager(layoutManager);
@@ -85,8 +113,6 @@ public class MainActivity extends AppCompatActivity {
         textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 200));
         textView.setText("我是头部布局");
         adapter.addHeaderView(textView);
-
-
     }
 
     private List mockData() {

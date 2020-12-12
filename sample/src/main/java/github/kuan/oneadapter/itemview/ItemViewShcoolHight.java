@@ -11,17 +11,17 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import github.kuan.oneadapter.BaseEventHandlerAgent;
-import github.kuan.oneadapter.IItemView;
+import github.kuan.oneadapter.BaseEventMessenger;
+import github.kuan.oneadapter.interfaces.ItemView;
 import github.kuan.oneadapter.MainActivity;
 import github.kuan.oneadapter.OneAdapter;
 import github.kuan.oneadapter.model.SchoolModel;
 
-public class ItemViewShcoolHight extends LinearLayout implements IItemView<SchoolModel> {
+public class ItemViewShcoolHight extends LinearLayout implements ItemView<SchoolModel> {
 
     public TextView mTextView;
     private RecyclerView mRecyclerView;
-    private OneAdapter<BaseEventHandlerAgent> mOneAdapter;
+    private OneAdapter mOneAdapter;
 
     public ItemViewShcoolHight(Context context) {
         this(context, null);
@@ -42,7 +42,7 @@ public class ItemViewShcoolHight extends LinearLayout implements IItemView<Schoo
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL));
         mRecyclerView.setRecycledViewPool(MainActivity.sPool);
 
-        mOneAdapter = new OneAdapter<>();
+        mOneAdapter = new OneAdapter();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         layoutManager.setRecycleChildrenOnDetach(true);
@@ -51,10 +51,10 @@ public class ItemViewShcoolHight extends LinearLayout implements IItemView<Schoo
     }
 
     @Override
-    public void bindData(int position, SchoolModel data, BaseEventHandlerAgent event) {
+    public void bindData(int position, SchoolModel data, BaseEventMessenger event, OneAdapter adapter) {
         mTextView.setText(data.getLevelLabel());
 
-        mOneAdapter.setEventAgent(event);
+//        mOneAdapter.setEventAgent(event);
         mOneAdapter.setmDatas(data.gradeClassList);
     }
 }

@@ -2,7 +2,6 @@ package github.kuan.oneadapter;
 
 import android.content.Context;
 import android.util.SparseArray;
-import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -13,53 +12,60 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import github.eekidu.android.base.util.timecost.CostTimeUtil;
 import github.kuan.oneadapter.imple.ItemViewWhenError;
+import github.kuan.oneadapter.interfaces.ItemView;
+import github.kuan.oneadapter.interfaces.ItemViewRouter;
+import github.kuan.oneadapter.internal.ItemViewRouterManager;
 
 /**
  * @author kuan
  */
-public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class OneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static boolean isDebug = true;
 
-    protected List mDatas;
-    protected E mBaseEventHandlerAgent;
-    protected SparseIntArray mSparseIntArray;
+    /**
+     * 数据源
+     */
+    protected List<Object> mDataList;
+    /**
+     * 信使
+     * ItemView与上层之间相互通信的桥梁
+     */
+    protected BaseEventMessenger mEventMessenger;
 
     /**
      * Type到ViewClass的映射
      */
     private SparseArray<Class<? extends View>> mTypeToViewMap;
 
-    private ItemViewProviderManager mItemViewProviderManager;
-
+    private ItemViewRouterManager mItemViewRouterManager;
 
     public OneAdapter() {
         this(null, null);
-
     }
 
-    public OneAdapter(List datas) {
-        this(datas, null);
+    public OneAdapter(List dataList) {
+        this(dataList, null);
     }
 
-    public OneAdapter(E eventHandlerAgent) {
+    public OneAdapter(BaseEventMessenger eventHandlerAgent) {
         this(null, eventHandlerAgent);
     }
 
-    public OneAdapter(List datas, E baseEventHandlerAgent) {
-        this.mBaseEventHandlerAgent = baseEventHandlerAgent;
-        this.mDatas = datas;
+    public OneAdapter(List dataList, BaseEventMessenger eventMessenger) {
+        this.mEventMessenger = eventMessenger;
+        this.mDataList = dataList;
         mTypeToViewMap = new SparseArray<>();
-        mItemViewProviderManager = new ItemViewProviderManager();
+        mItemViewRouterManager = new ItemViewRouterManager();
     }
+
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = null;
         try {
-            Class<? extends View> aClass = mTypeToViewMap.get(viewType);
+            Class<? extends View> aClass = mTypeToViewMap.get(viewType);//TODO 细化报错信息
             Constructor<? extends View> constructor = aClass.getConstructor(Context.class);
             itemView = constructor.newInstance(parent.getContext());
 
@@ -74,12 +80,12 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         View holderItemView = holder.itemView;
-        if (holderItemView instanceof IItemView) {
-            Object model = mDatas.get(position);
-            IItemView itemView = (IItemView) holderItemView;
+        Object model = mDataList.get(position);
+        if (holderItemView instanceof ItemView) {
+            ItemView itemView = (ItemView) holderItemView;
 
-            if (mBaseEventHandlerAgent != null) {
-                View.OnClickListener itemClickListener = mBaseEventHandlerAgent.getItemClickListener(itemView.getClass());
+            if (mEventMessenger != null) {
+                View.OnClickListener itemClickListener = mEventMessenger.getItemClickListener(itemView.getClass());
                 if (itemClickListener != null) {
                     holderItemView.setOnClickListener(itemClickListener);
                 }
@@ -87,9 +93,9 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
 
             try {
                 Class<?> modelClass = model.getClass();
-                IItemViewProvider provider = mItemViewProviderManager.findProvider(modelClass);
+                ItemViewRouter provider = mItemViewRouterManager.findProvider(modelClass);
                 if (provider != null) {
-                    provider.onBindDataAgent(position, model, mBaseEventHandlerAgent, itemView, this);
+                    provider.onBindDataAgent(position, model, mEventMessenger, itemView, this);
                 }
             } catch (Exception ex) {
                 if (isDebug) {
@@ -107,7 +113,7 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
             }
         } else {
             if (isDebug) {
-                String errMsg = String.format("(%s.java:1) must implement IItemView interface!", holderItemView.getClass().getSimpleName());
+                String errMsg = String.format("(%s.java:1) must implement IItemView interface! check %s", holderItemView.getClass().getSimpleName(), model.getClass().getSimpleName());//TODO
                 throw new ClassCastException(errMsg);
             }
         }
@@ -116,61 +122,46 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
     @Override
     public int getItemViewType(int position) {
 
-
-        CostTimeUtil.start("getItemViewType");
-
-        Object model = mDatas.get(position);
+        Object model = mDataList.get(position);
         Class<?> modelClazz = model.getClass();
 
         Class<? extends View> itemViewClazz = null;
 
-        IItemViewProvider provider = mItemViewProviderManager.findProvider(modelClazz);
+        ItemViewRouter<Object> provider = mItemViewRouterManager.findProvider(modelClazz);
         if (provider != null) {
-            itemViewClazz = provider.getItemView(position, model, mBaseEventHandlerAgent);
+            itemViewClazz = provider.getItemView(position, model, mEventMessenger, this);
         } else {
             if (isDebug) {
-                String errInfo = String.format("需要注册或者在数据实体上标记IItemViewProvider");
+                String errInfo = String.format("需要注册或者在数据实体上标记IItemViewProvider");//TODO
                 throw new RuntimeException(errInfo);
             }
         }
 
         if (itemViewClazz != null) {
             int itemViewType = itemViewClazz.hashCode();
-            mTypeToViewMap.put(itemViewType,itemViewClazz);
+            mTypeToViewMap.put(itemViewType, itemViewClazz);
             return itemViewType;
-
-//            int index = mTypeToViewMap.indexOfValue(itemViewClazz);
-//            if (index > -1) {
-//                CostTimeUtil.end("getItemViewType");
-//                return index;
-//            } else {
-//                mTypeToViewMap.put(mTypeToViewMap.size(), itemViewClazz);
-//                CostTimeUtil.end("getItemViewType");
-//                return mTypeToViewMap.size() - 1;
-//            }
         }
         return -1;
     }
 
-
     @Override
     public int getItemCount() {
-        return mDatas == null ? 0 : mDatas.size();
+        return mDataList == null ? 0 : mDataList.size();
     }
 
-
-    public void setItemViewProviderManager(ItemViewProviderManager itemViewProviderManager) {
-
-        mItemViewProviderManager = itemViewProviderManager;
+    public <T> void registerItemViewRouter(Class<T> modelClass, ItemViewRouter<T> itemViewRouter) {
+        mItemViewRouterManager.registerItem(modelClass, itemViewRouter);
     }
+
 
     /*******************************/
-    public List getDatas() {
-        return mDatas;
+    public List getDataList() {
+        return mDataList;
     }
 
     public void clear() {
-        List<?> datas = getDatas();
+        List<?> datas = getDataList();
         if (datas != null) {
             datas.clear();
         }
@@ -182,33 +173,29 @@ public class OneAdapter<E extends BaseEventHandlerAgent> extends RecyclerView.Ad
         if (baseBean == null) {
             return;
         }
-        if (mDatas == null) {
-            mDatas = new ArrayList();
+        if (mDataList == null) {
+            mDataList = new ArrayList();
         }
-        mDatas.add(baseBean);
-        notifyItemInserted(mDatas.size() - 1);
+        mDataList.add(baseBean);
+        notifyItemInserted(mDataList.size() - 1);
     }
 
     public void appendDatas(List datas) {
         if (datas == null) {
             return;
         }
-        if (mDatas == null) {
-            mDatas = new ArrayList();
+        if (mDataList == null) {
+            mDataList = new ArrayList();
         }
-        int size = mDatas.size();
-        mDatas.addAll(datas);
+        int size = mDataList.size();
+        mDataList.addAll(datas);
         notifyItemInserted(size);
     }
 
     public void setmDatas(List datas) {
         if (datas != null) {
-            mDatas = datas;
+            mDataList = datas;
             notifyDataSetChanged();
         }
-    }
-
-    public void setEventAgent(E event) {
-        mBaseEventHandlerAgent=event;
     }
 }

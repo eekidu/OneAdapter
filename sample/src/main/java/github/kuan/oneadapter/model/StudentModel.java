@@ -1,9 +1,9 @@
 package github.kuan.oneadapter.model;
 
-import github.kuan.oneadapter.MapToViewProvider;
-import github.kuan.oneadapter.viewprovider.SchoolItemProvider;
+import github.kuan.oneadapter.anotitions.ItemViewRouteAno;
+import github.kuan.oneadapter.viewprovider.SchoolItemRouter;
 
-@MapToViewProvider(SchoolItemProvider.class)
+@ItemViewRouteAno(SchoolItemRouter.class)
 public class StudentModel {
     public String name;
 }

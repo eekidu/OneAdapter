@@ -11,18 +11,17 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import github.kuan.oneadapter.BaseEventHandlerAgent;
-import github.kuan.oneadapter.IItemView;
+import github.kuan.oneadapter.BaseEventMessenger;
+import github.kuan.oneadapter.interfaces.ItemView;
 import github.kuan.oneadapter.MainActivity;
 import github.kuan.oneadapter.OneAdapter;
-import github.kuan.oneadapter.R;
 import github.kuan.oneadapter.model.GradeClassModel;
 
-public class ItemViewGradeClazz extends LinearLayout implements IItemView<GradeClassModel> {
+public class ItemViewGradeClazz extends LinearLayout implements ItemView<GradeClassModel> {
 
     public TextView mTextView;
     private RecyclerView mRecyclerView;
-    private OneAdapter<BaseEventHandlerAgent> mOneAdapter;
+    private OneAdapter mOneAdapter;
 
     public ItemViewGradeClazz(Context context) {
         this(context, null);
@@ -49,7 +48,7 @@ public class ItemViewGradeClazz extends LinearLayout implements IItemView<GradeC
         mRecyclerView.setRecycledViewPool(MainActivity.sPool);
 
 
-        mOneAdapter = new OneAdapter<>();
+        mOneAdapter = new OneAdapter();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         layoutManager.setRecycleChildrenOnDetach(true);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -58,10 +57,10 @@ public class ItemViewGradeClazz extends LinearLayout implements IItemView<GradeC
     }
 
     @Override
-    public void bindData(int position, GradeClassModel data, BaseEventHandlerAgent event) {
+    public void bindData(int position, GradeClassModel data, BaseEventMessenger event, OneAdapter adapter) {
         mTextView.setText(data.toString());
 
-        mOneAdapter.setEventAgent(event);
+//        mOneAdapter.setEventAgent(event);
         mOneAdapter.setmDatas(data.mStudentModelList);
         Log.d("1234", "ItemViewGradeClazz: " + data.mStudentModelList.size());
     }

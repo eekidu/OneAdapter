@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.collection.SparseArrayCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import github.kuan.oneadapter.BaseEventHandlerAgent;
+import github.kuan.oneadapter.BaseEventMessenger;
 import github.kuan.oneadapter.OneAdapter;
 
 public class HeaderOneAdapter<E> extends OneAdapter {
@@ -20,8 +20,8 @@ public class HeaderOneAdapter<E> extends OneAdapter {
     public HeaderOneAdapter() {
     }
 
-    public HeaderOneAdapter(BaseEventHandlerAgent baseEventHandlerAgent) {
-        super(baseEventHandlerAgent);
+    public HeaderOneAdapter(BaseEventMessenger baseEventMessenger) {
+        super(baseEventMessenger);
     }
 
     @NonNull

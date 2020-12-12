@@ -18,8 +18,8 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
     }
+    apply from: "https://gitee.com/ksee/AppBuildConfig/raw/dev_comm/config/deps.gradle"
 }
 
 

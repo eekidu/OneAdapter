@@ -2,10 +2,10 @@ package github.kuan.oneadapter.model;
 
 import java.util.List;
 
-import github.kuan.oneadapter.MapToViewProvider;
-import github.kuan.oneadapter.viewprovider.SchoolItemProvider;
+import github.kuan.oneadapter.anotitions.ItemViewRouteAno;
+import github.kuan.oneadapter.viewprovider.SchoolItemRouter;
 
-@MapToViewProvider(SchoolItemProvider.class)
+@ItemViewRouteAno(SchoolItemRouter.class)
 public class SchoolModel {
 
     public int level;

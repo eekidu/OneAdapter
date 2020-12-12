@@ -8,16 +8,17 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import github.kuan.oneadapter.BaseEventHandlerAgent;
-import github.kuan.oneadapter.IItemView;
+import github.kuan.oneadapter.BaseEventMessenger;
+import github.kuan.oneadapter.interfaces.ItemView;
+import github.kuan.oneadapter.OneAdapter;
 import github.kuan.oneadapter.model.StudentModel;
 
-public class ItemViewStudent extends LinearLayout implements IItemView<StudentModel>, View.OnClickListener {
+public class ItemViewStudent extends LinearLayout implements ItemView<StudentModel>, View.OnClickListener {
 
     private TextView mTextView;
     private StudentModel mData;
     private int mPosition;
-    private BaseEventHandlerAgent mEvent;
+    private BaseEventMessenger mEvent;
 
 
     public interface OnSutdentItemClick {
@@ -40,12 +41,11 @@ public class ItemViewStudent extends LinearLayout implements IItemView<StudentMo
     }
 
     @Override
-    public void bindData(int position, StudentModel data, BaseEventHandlerAgent event) {
+    public void bindData(int position, StudentModel data, BaseEventMessenger event, OneAdapter adapter) {
         mData = data;
         mPosition = position;
         mEvent = event;
         mTextView.setText(data.name);
-
     }
 
     @Override

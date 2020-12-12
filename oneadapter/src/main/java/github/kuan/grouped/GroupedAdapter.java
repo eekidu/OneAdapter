@@ -2,12 +2,12 @@ package github.kuan.grouped;
 
 import java.util.List;
 
-import github.kuan.oneadapter.BaseEventHandlerAgent;
+import github.kuan.oneadapter.BaseEventMessenger;
 import github.kuan.oneadapter.OneAdapter;
 
 public class GroupedAdapter extends OneAdapter {
-    public GroupedAdapter(List datas, BaseEventHandlerAgent baseEventHandlerAgent) {
-        super(datas, baseEventHandlerAgent);
+    public GroupedAdapter(List datas, BaseEventMessenger baseEventMessenger) {
+        super(datas, baseEventMessenger);
     }
 
     @Override
@@ -18,7 +18,7 @@ public class GroupedAdapter extends OneAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        mDatas.get(position);
+        mDataList.get(position);
 
         return super.getItemViewType(position);
     }
