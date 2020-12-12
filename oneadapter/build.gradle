@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 
-apply from: "https://gitee.com/ksee/AppBuildConfig/raw/dev_comm/script/mvnpush.gradle"
 project.group = "github.kuan"
 project.version = "1.1.0"
 
@@ -36,7 +35,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation DEPS.appcompat
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
