@@ -3,9 +3,7 @@
 # OneAdapter
 
 该库的目的是简化RecyclerView的Adapter的使用，全局只有一个Adapter，无需维护Type、ViewHolder以及书写模板的Adapter。        
-基于注解和约定，使数据实体与ItemView绑定变得简洁，扩展容易。
-- 注解：标记在数据实体上，标示该数据类应用的ItemView。
-- 约定：RecyclerView的条目View（ItemView）需要实现ItemView接口(😂)
+使数据实体与ItemView绑定变得简洁，容易扩展。支持数据实体与ItemView"一对多"的映射关系。
 
 ## 依赖
 
@@ -28,6 +26,7 @@ dependencies {
 ## 使用
 #### 1、“一对一”：即一种数据实体类永远只对应一种样式的ItemView。
 1、步骤一：在数据实体上加注解，指定要绑定的ItemView。
+- 不方便用注解的，也支持手动注册的方式。
 ```
 @ItemViewAno(ItemViewVideoView.class)
 public class VideoModel {
@@ -37,6 +36,7 @@ public class VideoModel {
 ```
 
 2、步骤二：itemView
+- ItemView需要实现ItemView接口😂，这里需要把条目封装成View。
 
 ```
 public class ItemViewVideoView extends LinearLayout implements ItemView<VideoModel> {
