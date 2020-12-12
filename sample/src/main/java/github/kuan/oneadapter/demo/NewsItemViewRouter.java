@@ -12,6 +12,7 @@ import github.kuan.oneadapter.BaseEventMessenger;
 import github.kuan.oneadapter.OneAdapter;
 import github.kuan.oneadapter.demo.itemview.ItemViewNewsType1;
 import github.kuan.oneadapter.demo.itemview.ItemViewNewsType2;
+import github.kuan.oneadapter.demo.itemview.ItemViewNewsType3;
 import github.kuan.oneadapter.demo.model.NewsModel;
 import github.kuan.oneadapter.interfaces.ItemViewRouter;
 
@@ -33,6 +34,8 @@ public class NewsItemViewRouter implements ItemViewRouter<NewsModel> {
                 return ItemViewNewsType1.class;
             case 2:
                 return ItemViewNewsType2.class;
+            case 3:
+                return ItemViewNewsType3.class;
         }
 
         return null;

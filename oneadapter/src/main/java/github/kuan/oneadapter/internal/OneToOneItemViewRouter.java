@@ -13,7 +13,7 @@ import github.kuan.oneadapter.interfaces.ItemViewRouter;
  * @author kuan
  * @date 2020/12/12
  */
-class OneToOneItemViewRouter implements ItemViewRouter<Object> {
+public class OneToOneItemViewRouter implements ItemViewRouter<Object> {
     private final Class<? extends View> mItemViewClazz;
 
     public OneToOneItemViewRouter(Class<? extends View> itemViewClass) {

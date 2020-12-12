@@ -1,16 +1,23 @@
 package github.kuan.oneadapter;
 
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import github.kuan.oneadapter.demo.DemoEventMessenger;
 import github.kuan.oneadapter.demo.model.NewsModel;
 import github.kuan.oneadapter.demo.model.VideoModel;
 import github.kuan.oneadapter.ext.HeaderOneAdapter;
@@ -23,36 +30,49 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        RecyclerView rv = new RecyclerView(this);
-        setContentView(rv);
+        RecyclerView recyclerView = new RecyclerView(this);
+        setContentView(recyclerView);
 
+        OneAdapter.setDebug(true, true);
 
-//        demo1(rv);
-        demo2(rv);
-
+        demo1(recyclerView);
         DevRecyclerUtil.openDev(this);
     }
 
-    private void demo2(RecyclerView recycler) {
+    private void demo1(RecyclerView recycler) {
         List<Object> objects = new ArrayList<>();
 
         objects.add(new VideoModel());
         objects.add(new NewsModel(1));
         objects.add(new NewsModel(2));
         objects.add(new NewsModel(2));
+        objects.add(new NewsModel(4));
         objects.add(new NewsModel(2));
-        objects.add(new NewsModel(2));
+        objects.add(new NewsModel(3));
+        objects.add(new NewsModel(1));
+        objects.add(new NewsModel(1));
+        objects.add(new NewsModel(1));
+        objects.add(new NewsModel(1));
+        objects.add(new NewsModel(1));
+        objects.add(new NewsModel(1));
         objects.add(new NewsModel(1));
         objects.add(new NewsModel(1));
         objects.add(new VideoModel());
 
         HeaderOneAdapter oneAdapter = new HeaderOneAdapter();
-        oneAdapter.setmDatas(objects);
+        oneAdapter.setDataList(objects);
 
         recycler.setLayoutManager(new LinearLayoutManager(this));
         recycler.setAdapter(oneAdapter);
 
         addHeaderFooter(oneAdapter);
+        addClickListener(recycler, oneAdapter);
+
+    }
+
+    private void addClickListener(RecyclerView recycler, HeaderOneAdapter oneAdapter) {
+        BaseEventMessenger demoEventMessage = new DemoEventMessenger(MainActivity.this, recycler);
+        oneAdapter.setEventMessenger(demoEventMessage);
 
     }
 

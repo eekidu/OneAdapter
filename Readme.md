@@ -88,9 +88,10 @@ public class NewsItemViewRouter implements ItemViewRouter<NewsModel> {
 ```
 剩下的就是把OneAdapter设置给RecyclerView，同上。
 
+#### 3、通信
+
+
 #### 总结：
 
-- 简洁
-基于该约定，当进行Item类型扩展时，会非常简洁高效。只需新增数据实体，完成新样式的ItemView既可，无效改动已有代码。
-- 安全
-某一个ItemView的创建、或是数据绑定出现异常，会隐藏该条目，不会对其他条目产生影响，更不会是程序崩溃。
+- 简洁。当进行Item类型扩展时，会非常简洁高效。只需新增数据实体，完成新样式的ItemView既可，无效改动已有代码。
+- 安全。某一个ItemView的创建、或是数据绑定出现异常，会隐藏该条目，不会对其他条目产生影响，更不会是程序崩溃。

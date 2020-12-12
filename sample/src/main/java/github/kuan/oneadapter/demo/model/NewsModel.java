@@ -13,4 +13,16 @@ public class NewsModel {
     public int type;
     public String title;
     public String content;
+
+
+    @Override
+    public String toString() {
+        return "NewsModel{" +
+                "type=" + type +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                '}';
+    }
 }
+
+

@@ -2,11 +2,14 @@ package github.kuan.oneadapter.internal;
 
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import java.util.HashMap;
 
 import github.kuan.oneadapter.OneAdapter;
 import github.kuan.oneadapter.anotitions.ItemViewAno;
 import github.kuan.oneadapter.anotitions.ItemViewRouteAno;
+import github.kuan.oneadapter.imple.ItemViewWhenError;
 import github.kuan.oneadapter.interfaces.ItemViewRouter;
 
 public class ItemViewRouterManager {
@@ -20,13 +23,17 @@ public class ItemViewRouterManager {
         mModelClassToItemViewRouterMap = new HashMap<>();
     }
 
-    public void registerItem(Class<?> model, ItemViewRouter itemViewProvider) {
-        mModelClassToItemViewRouterMap.put(model, itemViewProvider);
+    public void registerItem(Class<?> model, ItemViewRouter itemViewRouter) {
+        mModelClassToItemViewRouterMap.put(model, itemViewRouter);
     }
 
-    public ItemViewRouter findProvider(Class<?> modelClazz) {
-        ItemViewRouter provider = mModelClassToItemViewRouterMap.get(modelClazz);
-        if (provider == null) {
+    @Nullable
+    public ItemViewRouter finItemViewRouterBy(Class<?> modelClazz) {
+        //1、从缓存中获取ItemViewRouter
+        ItemViewRouter itemViewRouter = mModelClassToItemViewRouterMap.get(modelClazz);
+        if (itemViewRouter == null) {
+            //2、如果没找到，从数据实体的注解上获取,创建。
+            //2.1 一对一注解
             ItemViewAno annotation = modelClazz.getAnnotation(ItemViewAno.class);
             if (annotation != null) {
                 Class<? extends View> value = annotation.value();
@@ -34,27 +41,34 @@ public class ItemViewRouterManager {
                 registerItem(modelClazz, oneToOneItemViewRouter);
                 return oneToOneItemViewRouter;
             }
-
-            //2、如果没找到，从数据实体的注解上找,并创建实例ItemViewProvider
+            //2.2 一对多注解
             ItemViewRouteAno providerAnnotation = modelClazz.getAnnotation(ItemViewRouteAno.class);
             if (providerAnnotation != null) {
                 Class<? extends ItemViewRouter> providerClass = providerAnnotation.value();
                 try {
-                    provider = providerClass.newInstance();
-                    registerItem(modelClazz, provider);
+                    itemViewRouter = providerClass.newInstance();
+                    registerItem(modelClazz, itemViewRouter);
                 } catch (Exception e) {
-                    if (OneAdapter.isDebug) {
+                    if (OneAdapter.isDebug()) {
+                        //根据注解信息，创建ItemViewRouter实例失败
                         String errInfo = String.format("(%s.java:1) must has empty construction method!", providerClass.getSimpleName());
                         throw new RuntimeException(errInfo);
                     }
                 }
-            } else {
-                if (OneAdapter.isDebug) {
-                    String errInfo = String.format("(%s.java:0) need annotation: %s!", modelClazz.getSimpleName(), "@" + ItemViewRouteAno.class.getSimpleName());
+            }
+        }
+
+        //该数据的没有itemViewRouter，可能缺少注解
+        if (itemViewRouter == null) {
+            if (OneAdapter.isDebug()) {
+                if (OneAdapter.isInDeveloping()) {
+                    registerItem(modelClazz, new OneToOneItemViewRouter(ItemViewWhenError.class));
+                } else {
+                    String errInfo = String.format("(%s.java:0) need annotation: %s!,or call registerItemView()", modelClazz.getSimpleName(), "@" + ItemViewRouteAno.class.getSimpleName());
                     throw new RuntimeException(errInfo);
                 }
             }
         }
-        return provider;
+        return itemViewRouter;
     }
 }

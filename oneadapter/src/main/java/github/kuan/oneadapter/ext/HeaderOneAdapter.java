@@ -98,6 +98,7 @@ public class HeaderOneAdapter extends OneAdapter {
         notifyDataSetChanged();
     }
 
+    @Override
     public int getHeadersCount() {
         return mHeaderViews.size();
     }

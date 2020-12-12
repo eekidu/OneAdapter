@@ -2,16 +2,14 @@ package github.kuan.oneadapter;
 
 import android.view.View;
 
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
 import github.kuan.oneadapter.interfaces.ItemView;
+import github.kuan.oneadapter.listener.OnItemClickListener;
 
 /**
  * 作用：
@@ -31,9 +29,14 @@ public class BaseEventMessenger {
     private Map<Object, Object> mExtParams;
 
     /**
+     * 条目点击事件回调
+     */
+    private OnItemClickListener mItemClickListener;
+    /**
      * 设置条目点击事件
      */
-    private Map<Class, View.OnClickListener> mItemClickListeners;
+    private Map<Class, OnItemClickListener> mItemClickListeners;
+
     /**
      * 设置自定义事件Callback
      */
@@ -44,17 +47,25 @@ public class BaseEventMessenger {
     }
 
 
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mItemClickListener = onItemClickListener;
+    }
+
+    public OnItemClickListener getOnItemClickListener() {
+        return mItemClickListener;
+    }
+
     /**
      * 设置ItemView的点击事件
      *
      * @param itemViewClazz
-     * @param itemClickListener
+     * @param onItemClickListener
      */
-    public void setOnItemClickListener(Class<? extends ItemView> itemViewClazz, View.OnClickListener itemClickListener) {
+    public void setOnItemClickListener(Class<? extends ItemView> itemViewClazz, OnItemClickListener onItemClickListener) {
         if (mItemClickListeners == null) {
             mItemClickListeners = new HashMap<>();
         }
-        mItemClickListeners.put(itemViewClazz, itemClickListener);
+        mItemClickListeners.put(itemViewClazz, onItemClickListener);
     }
 
     /**
@@ -63,7 +74,7 @@ public class BaseEventMessenger {
      * @param clazz
      * @return
      */
-    public View.OnClickListener getItemClickListener(Class<? extends ItemView> clazz) {
+    public OnItemClickListener getItemClickListener(Class<? extends ItemView> clazz) {
         return mItemClickListeners != null ? mItemClickListeners.get(clazz) : null;
     }
 
