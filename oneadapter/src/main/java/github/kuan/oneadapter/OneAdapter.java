@@ -28,12 +28,12 @@ public class OneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     /**
      * debug开关，影响异常的处理方式。release会隐藏掉异常的ItemView。
      */
-    private static boolean isDebug = true;
+    private static boolean isDebug = false;
 
     /**
      * 开发阶段，会把异常作为item进行显示，不影响调试其他条目。
      */
-    private static boolean isInDeveloping = true;
+    private static boolean isInDeveloping = false;
 
     public static boolean isDebug() {
         return isDebug;
