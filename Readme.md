@@ -7,7 +7,24 @@
 - 注解：标记在数据实体上，标示该数据类应用的ItemView。
 - 约定：RecyclerView的条目View（ItemView）需要实现ItemView接口(😂)
 
-## 使用：
+## 依赖
+
+```
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	}
+}
+
+	dependencies {
+	        implementation 'com.github.eekidu:OneAdapter:**'
+	}
+```
+
+
+
+## 使用
 #### 1、“一对一”：即一种数据实体类永远只对应一种样式的ItemView。
 1、步骤一：在数据实体上加注解，指定要绑定的ItemView。
 ```
