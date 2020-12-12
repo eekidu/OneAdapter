@@ -89,7 +89,6 @@ public class NewsItemViewRouter implements ItemViewRouter<NewsModel> {
 剩下的就是把OneAdapter设置给RecyclerView，同上。
 
 #### 总结：
-使用该库要求所有的Item都封装成View，虽然这显得有些局限，但是也符合封装的思想，把ItemView的创建、数据绑定、交互等自身的逻辑都封装在该类内部。
 
 - 简洁
 基于该约定，当进行Item类型扩展时，会非常简洁高效。只需新增数据实体，完成新样式的ItemView既可，无效改动已有代码。
