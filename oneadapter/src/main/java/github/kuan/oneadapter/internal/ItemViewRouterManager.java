@@ -7,8 +7,8 @@ import androidx.annotation.Nullable;
 import java.util.HashMap;
 
 import github.kuan.oneadapter.OneAdapter;
-import github.kuan.oneadapter.anotitions.ItemViewAno;
-import github.kuan.oneadapter.anotitions.ItemViewRouteAno;
+import github.kuan.oneadapter.annotations.ItemViewModelTo;
+import github.kuan.oneadapter.annotations.ItemViewRouterModelTo;
 import github.kuan.oneadapter.imple.ItemViewWhenError;
 import github.kuan.oneadapter.interfaces.ItemViewRouter;
 
@@ -34,7 +34,7 @@ public class ItemViewRouterManager {
         if (itemViewRouter == null) {
             //2、如果没找到，从数据实体的注解上获取,创建。
             //2.1 一对一注解
-            ItemViewAno annotation = modelClazz.getAnnotation(ItemViewAno.class);
+            ItemViewModelTo annotation = modelClazz.getAnnotation(ItemViewModelTo.class);
             if (annotation != null) {
                 Class<? extends View> value = annotation.value();
                 OneToOneItemViewRouter oneToOneItemViewRouter = new OneToOneItemViewRouter(value);
@@ -42,7 +42,7 @@ public class ItemViewRouterManager {
                 return oneToOneItemViewRouter;
             }
             //2.2 一对多注解
-            ItemViewRouteAno providerAnnotation = modelClazz.getAnnotation(ItemViewRouteAno.class);
+            ItemViewRouterModelTo providerAnnotation = modelClazz.getAnnotation(ItemViewRouterModelTo.class);
             if (providerAnnotation != null) {
                 Class<? extends ItemViewRouter> providerClass = providerAnnotation.value();
                 try {
@@ -64,7 +64,7 @@ public class ItemViewRouterManager {
                 if (OneAdapter.isInDeveloping()) {
                     registerItem(modelClazz, new OneToOneItemViewRouter(ItemViewWhenError.class));
                 } else {
-                    String errInfo = String.format("(%s.java:0) need annotation: %s!,or call registerItemView()", modelClazz.getSimpleName(), "@" + ItemViewRouteAno.class.getSimpleName());
+                    String errInfo = String.format("(%s.java:0) need annotation: %s!,or call registerItemView()", modelClazz.getSimpleName(), "@" + ItemViewRouterModelTo.class.getSimpleName());
                     throw new RuntimeException(errInfo);
                 }
             }

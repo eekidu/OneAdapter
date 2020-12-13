@@ -1,5 +1,8 @@
 package github.kuan.oneadapter.interfaces;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import github.kuan.oneadapter.BaseEventMessenger;
 import github.kuan.oneadapter.OneAdapter;
 
@@ -10,6 +13,6 @@ import github.kuan.oneadapter.OneAdapter;
  */
 public interface ItemView<M> {
 
-    void bindData(int position, M data, BaseEventMessenger event, OneAdapter adapter);
+    void bindData(int position, @NonNull M data, @Nullable BaseEventMessenger event, @NonNull OneAdapter adapter);
 
 }

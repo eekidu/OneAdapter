@@ -1,4 +1,4 @@
-package github.kuan.oneadapter.anotitions;
+package github.kuan.oneadapter.annotations;
 
 import android.view.View;
 
@@ -12,6 +12,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ItemViewAno {
+public @interface ItemViewModelTo {
     Class<? extends View> value();
 }

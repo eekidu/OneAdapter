@@ -6,8 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Map;
-
 import github.kuan.oneadapter.BaseEventMessenger;
 import github.kuan.oneadapter.OneAdapter;
 import github.kuan.oneadapter.demo.itemview.ItemViewNewsType1;

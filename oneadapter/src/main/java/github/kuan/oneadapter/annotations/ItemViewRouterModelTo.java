@@ -1,11 +1,9 @@
-package github.kuan.oneadapter.anotitions;
+package github.kuan.oneadapter.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import github.kuan.oneadapter.interfaces.ItemViewRouter;
 
 /**
  * 标记在model上，通过ItemViewProvider，使得数据Model映射到某一具体ItemView.class。
@@ -14,8 +12,8 @@ import github.kuan.oneadapter.interfaces.ItemViewRouter;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ItemViewRouteAno {
+public @interface ItemViewRouterModelTo {
 
-    Class<? extends ItemViewRouter> value();
+    Class<? extends github.kuan.oneadapter.interfaces.ItemViewRouter> value();
 
 }

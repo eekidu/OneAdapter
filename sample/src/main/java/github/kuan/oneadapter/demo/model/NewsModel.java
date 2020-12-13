@@ -1,9 +1,9 @@
 package github.kuan.oneadapter.demo.model;
 
-import github.kuan.oneadapter.anotitions.ItemViewRouteAno;
+import github.kuan.oneadapter.annotations.ItemViewRouterModelTo;
 import github.kuan.oneadapter.demo.NewsItemViewRouter;
 
-@ItemViewRouteAno(NewsItemViewRouter.class)
+@ItemViewRouterModelTo(NewsItemViewRouter.class)
 public class NewsModel {
 
     public NewsModel(int type) {

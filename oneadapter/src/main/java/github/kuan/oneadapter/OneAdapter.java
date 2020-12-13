@@ -13,7 +13,6 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import github.kuan.oneadapter.anotitions.ItemViewRouteAno;
 import github.kuan.oneadapter.imple.ItemViewWhenError;
 import github.kuan.oneadapter.interfaces.ItemView;
 import github.kuan.oneadapter.interfaces.ItemViewRouter;

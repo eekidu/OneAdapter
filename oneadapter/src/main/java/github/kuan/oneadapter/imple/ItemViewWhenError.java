@@ -2,6 +2,7 @@ package github.kuan.oneadapter.imple;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -21,6 +22,7 @@ import github.kuan.oneadapter.OneAdapter;
  */
 public class ItemViewWhenError extends AppCompatTextView implements ItemView {
 
+
     public ItemViewWhenError(Context context) {
         this(context, null);
     }
@@ -31,24 +33,30 @@ public class ItemViewWhenError extends AppCompatTextView implements ItemView {
 
     public ItemViewWhenError(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        float density = Resources.getSystem().getDisplayMetrics().density;
         if (OneAdapter.isDebug()) {
-            int padding = (int) Resources.getSystem().getDisplayMetrics().density * 20;
+            int padding = (int) (density * 20);
             setPadding(0, padding, 0, padding);
             setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            setBackgroundColor(Color.YELLOW);
         } else {
             setLayoutParams(new LinearLayout.LayoutParams(0, 0));
         }
+        setMaxHeight((int) (density * 300));
     }
 
     @Override
     public void bindData(int position, Object data, BaseEventMessenger event, OneAdapter adapter) {
         if (OneAdapter.isDebug()) {
-            if(OneAdapter.isInDeveloping()){
+            if (OneAdapter.isInDeveloping()) {
                 String text = String.format("%s\n%s", "请检查该数据是否有对应ItemView返回", data.toString());
                 setText(text);
             }
         }
+    }
 
-
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 }

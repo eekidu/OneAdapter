@@ -25,19 +25,19 @@ dependencies {
 
 ## 使用
 #### 1、“一对一”：即一种数据实体类永远只对应一种样式的ItemView。
-1、步骤一：在数据实体上加注解，指定要绑定的ItemView。
-- 不方便用注解的，也支持手动注册的方式。
+1、步骤一：在数据实体上加注解，指定用哪种ItemView展示该数据。
 ```
-@ItemViewAno(ItemViewVideoView.class)
+@ItemViewModelTo(ItemViewVideoView.class)//表示VideoModel会走入ItemViewVideoView布局中进行展示
 public class VideoModel {
     public String title;
 }
 
 ```
+- 不方便用注解的，也支持手动注册的方式。
 
-2、步骤二：itemView
-- ItemView需要实现ItemView接口😂，这里需要把条目封装成View。
+2、步骤二：实现itemView样式，常规操作。
 
+- ItemView需要实现ItemView接口😂，OneAdapter会通过该方法进行数据绑定。
 ```
 public class ItemViewVideoView extends LinearLayout implements ItemView<VideoModel> {
 
@@ -68,7 +68,7 @@ recyclerView.setAdapter(oneAdapter);
 1、步骤一：在数据实体类上使用另外一个注解进行标记。
 
 ```
-@ItemViewRouteAno(NewsItemViewRouter.class)//表示该数据实体会用该类完成一对多的分发，使数据实体绑定具体的ItemView。
+@ItemViewRouterModelTo(NewsItemViewRouter.class)//表示该数据实体会用该类完成一对多的分发，使数据实体绑定具体的ItemView。
 public class NewsModel {
 
     public NewsModel(int type) {
@@ -111,6 +111,7 @@ BaseEventMessenger是ItemView与上层页面之间相互通信的一个信使。
 
 
 #### 总结：
+RecyclerView显示流程的起点是数据源，数据驱动显示，在数据上加注解，告知数据下一步该去哪。
 
 - 简洁，结构清晰。当进行Item类型扩展时，会非常简洁高效。只需新增数据实体，完成新样式的ItemView既可，无效改动已有代码。
 - 复用性高，ItemView的样式与BaseEventMessenger中的事件处理，在不同页面都可以得到很好的复用。

@@ -5,10 +5,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import github.kuan.oneadapter.BaseEventMessenger;
-import github.kuan.oneadapter.MainActivity;
 import github.kuan.oneadapter.OneAdapter;
 import github.kuan.oneadapter.demo.itemview.ItemViewNewsType3;
 import github.kuan.oneadapter.listener.OnItemClickListener;
